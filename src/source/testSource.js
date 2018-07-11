@@ -47,24 +47,21 @@ function getTestMessages() {
   return [
     messageBuilder().build(),
     messageBuilder().withVersion(undefined).build(),
-    messageBuilder().withVersion(undefined).withEvent(undefined).build(),
-    messageBuilder().withVersion(undefined).withEvent(undefined).withPayload(undefined).build(),
-    messageBuilder().withVersion(undefined).withEvent(undefined).withPayload(undefined).withCorrelationId(undefined).build(),
+    messageBuilder().withVersion(undefined).withEventName(undefined).build(),
+    messageBuilder().withVersion(undefined).withEventName(undefined).withPayload(undefined).build(),
+    messageBuilder().withVersion(undefined).withEventName(undefined).withPayload(undefined).withCorrelationId(undefined).build(),
     unstructuredMessage
   ];
 }
 
 
-class testSource extends Readable {
-  constructor(options) {
-    options.objectMode = true;
-    super(options);
+const messages = getTestMessages();
 
-    this.messages = getTestMessages();
-  }
+const testSource = new Readable({
+  "objectMode": true,
 
-  _read() {
-    const thisMessage = this.messages.shift();
+  read() {
+    const thisMessage = messages.shift();
     if (thisMessage) {
       console.log(`testSource - READ ${thisMessage.correlationId}`);
       this.push(thisMessage);
@@ -73,17 +70,22 @@ class testSource extends Readable {
       this.push(null);
     }
   }
+});
 
-  success(message) {
-    console.log(`testSource - success ${message.correlationId}`);
-  }
-  retry(message) {
-    console.log(`testSource - retry ${message.correlationId}`);
-  }
-  fail(message) {
-    console.log(`testSource - fail ${message.correlationId}`);
-  }
-}
+testSource.success = message => {
+  console.log(`testSource - success ${message.correlationId}`);
+  return Promise.resolve();
+};
+
+testSource.retry = message => {
+  console.log(`testSource - retry ${message.correlationId}`);
+  return Promise.resolve();
+};
+
+testSource.fail = message => {
+  console.log(`testSource - fail ${message.correlationId}`);
+  return Promise.resolve();
+};
 
 
 module.exports = testSource;

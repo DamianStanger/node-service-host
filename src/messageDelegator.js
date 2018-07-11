@@ -15,7 +15,7 @@ function messageDelegator(readStream, eventHandlerMap) {
     }
 
     if (!versionHandler) {
-      readStream.success(message);
+      return readStream.success(message);
     }
 
     return versionHandler(message, readStream.success, readStream.retry, readStream.fail).catch(() => {

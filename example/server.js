@@ -4,7 +4,7 @@ const serviceHost = require("../src/serviceHost")();
 
 
 function handlerFunction(message, success, retry, fail) {
-  console.log("Processing message", message);
+  console.log("server - Processing message", message);
   return Promise.resolve().then(() => {
 
     // Do work here
