@@ -2,10 +2,12 @@
   "name": "servicehost",
   "version": "1.0.0",
   "description": "Service Host",
-  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "eslint": "^5.1.0"
+  }
 }
