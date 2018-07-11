@@ -3,21 +3,18 @@
 const serviceHost = require("../src/serviceHost")();
 
 
-function handlerFunction(message, success, retry, fail) {
-  console.log("server - Processing message", message);
-  return Promise.resolve().then(() => {
+function orderPlacedHandler(message, success, retry, fail) {
+  console.log("server - orderPlacedHandler processing message", message);
 
-    // Do work here
+  function wait(milliSeconds) {
+    return new Promise(resolve => setTimeout(resolve, milliSeconds));
+  }
 
-    success(message);
-  }).catch(err => {
-    console.log("server - caught error", err)
-    fail(message);
-  });
+  return wait(2000).then(() => success(message)).catch(() => fail(message));
 }
 
 const eventName = "orderPlaced";
 const versionNumber = 1;
 
-serviceHost.register(handlerFunction, eventName, versionNumber);
+serviceHost.register(orderPlacedHandler, eventName, versionNumber);
 serviceHost.start();

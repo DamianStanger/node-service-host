@@ -27,7 +27,7 @@ function throttle(readStream, eventHandlerMap, maxConcurrency) {
       console.log(`throttle - ${message.correlationId} - ${inProgress}:${total} Write finished`);
     }
 
-    messageDelegator(message).then(asyncDone());
+    messageDelegator(message).then(asyncDone);
     inProgress++;
 
     checkConcurrency();
