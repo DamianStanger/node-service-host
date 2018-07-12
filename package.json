@@ -5,7 +5,8 @@
   "scripts": {
     "test": "mocha -u tdd",
     "istanbul": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui tdd",
-    "nyc": "./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha --ui tdd"
+    "nyc": "./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha --ui tdd",
+    "example": "node example/server.js"
   },
   "author": "",
   "license": "ISC",

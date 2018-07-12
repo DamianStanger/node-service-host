@@ -12,8 +12,8 @@ suite("configuration", () => {
     });
     test("sourceFileName", () => {
       const config = getConfiguration();
-      config.sourceFileName.should.equal("./source/testSource");
-      chai.assert.typeOf(config.source, "Object");
+      config.sourceFileName.should.match(/src.source.testSource$/);
+      config.source.should.be.an("object");
     });
     test("readHighWaterMark", () => {
       const config = getConfiguration();
@@ -30,8 +30,8 @@ suite("configuration", () => {
     test("sourceFileName", () => {
       process.env.source = "testSource";
       const config = getConfiguration();
-      config.sourceFileName.should.equal("./source/testSource");
-      chai.assert.typeOf(config.source, "Object");
+      config.sourceFileName.should.match(/src.source.testSource$/);
+      config.source.should.be.an("object");
     });
     test("readHighWaterMark", () => {
       process.env.readHighWaterMark = 77;
@@ -52,8 +52,8 @@ suite("configuration", () => {
     });
     test("sourceFileName", () => {
       const config = getConfiguration({"source": "testSource"});
-      config.sourceFileName.should.equal("./source/testSource");
-      chai.assert.typeOf(config.source, "Object");
+      config.sourceFileName.should.match(/src.source.testSource$/);
+      config.source.should.be.an("object");
     });
     test("readHighWaterMark", () => {
       const config = getConfiguration({"readHighWaterMark": 222});
