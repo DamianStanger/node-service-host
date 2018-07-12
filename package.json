@@ -3,15 +3,21 @@
   "version": "1.0.0",
   "description": "Service Host",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -u tdd",
+    "istanbul": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui tdd",
+    "nyc": "./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha --ui tdd"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.271.1",
+    "aws-sdk": "^2.271.1"
+  },
+  "devDependencies": {
     "chai": "^4.1.2",
     "eslint": "^5.1.0",
+    "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
     "sinon": "^6.1.3"
   }
 }

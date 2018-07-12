@@ -11,8 +11,8 @@ function getConfiguration(config = {}) {
   sourceFileName = `.${path.sep}source${path.sep}${sourceFileName}`;
 
   const configuration = {
-    readHighWaterMark,
-    maxConcurrency,
+    "readHighWaterMark": parseInt(readHighWaterMark, 10),
+    "maxConcurrency": parseInt(maxConcurrency, 10),
     sourceFileName
   };
 

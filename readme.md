@@ -31,4 +31,11 @@ This will send 10 messages into the serviceHost simulating a 2 second piece of w
 To run all the mocha tests
 ```
 npm test
+node_modules/mocha/bin/mocha -u tdd
+
+npm run istsnbul
+./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui tdd
+
+npm run nyc
+./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha --ui tdd
 ```
