@@ -22,3 +22,5 @@ example
 to run a simulated full stack test with a fixed set of messages from a testSource run:
 node example/server.js
 This will send 10 messages into the serviceHost simulating a 2 second piece of work inside the handler
+
+tests
