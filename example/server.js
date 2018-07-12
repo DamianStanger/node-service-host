@@ -1,6 +1,11 @@
 /* eslint-disable no-console,no-unused-vars */
 
-const serviceHost = require("../src/serviceHost")();
+const config = {
+  "readHighWaterMark": 2,
+  "maxConcurrency": 2,
+  "source": "testSource"
+};
+const serviceHost = require("../src/serviceHost")(config);
 
 
 function orderPlacedHandler(message, success, retry, fail) {

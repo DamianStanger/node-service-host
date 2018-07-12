@@ -1,9 +1,10 @@
-const source = require("./source/testSource");
 const throttle = require("./throttle");
+const getConfiguration = require("./configuration");
 
 
-function serviceHost() {
+function serviceHost(config) {
 
+  const configuration = getConfiguration(config);
   const eventNameToHandlerMap = new Map();
 
   function register(handler, eventName, version) {
@@ -26,8 +27,7 @@ function serviceHost() {
   }
 
   function start() {
-    const maxConcurrency = 2;
-    throttle(source, eventNameToHandlerMap, maxConcurrency);
+    throttle(configuration.source, eventNameToHandlerMap, configuration.maxConcurrency);
   }
 
   return {register, start};

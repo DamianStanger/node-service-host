@@ -61,35 +61,39 @@ function getTestMessages() {
 
 const messages = getTestMessages();
 
-const testSource = new Readable({
-  "objectMode": true,
+function getSource(configuration) {
+  const testSource = new Readable({
+    "objectMode": true,
+    "highWaterMark": configuration.readHighWaterMark,
 
-  read() {
-    const thisMessage = messages.shift();
-    if (thisMessage) {
-      console.log(`testSource - READ ${thisMessage.correlationId}`);
-      this.push(thisMessage);
-    } else {
-      console.log("testSource - READ End");
-      this.push(null);
+    read() {
+      const thisMessage = messages.shift();
+      if (thisMessage) {
+        console.log(`testSource - READ ${thisMessage.correlationId}`);
+        this.push(thisMessage);
+      } else {
+        console.log("testSource - READ End");
+        this.push(null);
+      }
     }
-  }
-});
+  });
 
-testSource.success = message => {
-  console.log(`testSource - success ${message.correlationId}`);
-  return Promise.resolve();
-};
+  testSource.success = message => {
+    console.log(`testSource - success ${message.correlationId}`);
+    return Promise.resolve();
+  };
 
-testSource.retry = message => {
-  console.log(`testSource - retry ${message.correlationId}`);
-  return Promise.resolve();
-};
+  testSource.retry = message => {
+    console.log(`testSource - retry ${message.correlationId}`);
+    return Promise.resolve();
+  };
 
-testSource.fail = message => {
-  console.log(`testSource - fail ${message.correlationId}`);
-  return Promise.resolve();
-};
+  testSource.fail = message => {
+    console.log(`testSource - fail ${message.correlationId}`);
+    return Promise.resolve();
+  };
 
+  return testSource;
+}
 
-module.exports = testSource;
+module.exports = getSource;
