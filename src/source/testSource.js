@@ -1,6 +1,6 @@
-/* eslint-disable no-undefined,no-console */
-
+/* eslint-disable no-undefined */
 const {Readable} = require("stream");
+const logger = require("../logger")("serviceHost.testSource");
 
 
 let index = 0;
@@ -69,27 +69,27 @@ function getSource(configuration) {
     read() {
       const thisMessage = messages.shift();
       if (thisMessage) {
-        console.log(`testSource - READ ${thisMessage.correlationId}`);
+        logger.info(`testSource - READ ${thisMessage.correlationId}`);
         this.push(thisMessage);
       } else {
-        console.log("testSource - READ End");
+        logger.warn("testSource - READ End");
         this.push(null);
       }
     }
   });
 
   testSource.success = message => {
-    console.log(`testSource - success ${message.correlationId}`);
+    logger.info(`success ${message.correlationId}`);
     return Promise.resolve();
   };
 
   testSource.retry = message => {
-    console.log(`testSource - retry ${message.correlationId}`);
+    logger.warn(`retry ${message.correlationId}`);
     return Promise.resolve();
   };
 
-  testSource.fail = message => {
-    console.log(`testSource - fail ${message.correlationId}`);
+  testSource.fail = (message, error) => {
+    logger.error(`fail ${message.correlationId}`, error);
     return Promise.resolve();
   };
 

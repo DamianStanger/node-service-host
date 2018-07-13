@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+const logger = require("./logger")("serviceHost.throttle");
 
 
 function throttle(readStream, messageDelegator, maxConcurrency) {
@@ -8,10 +8,10 @@ function throttle(readStream, messageDelegator, maxConcurrency) {
   function checkConcurrency() {
     if (inProgress >= maxConcurrency) {
       readStream.pause();
-      // console.log(`throttle - ${inProgress} Write pausing`);
+      logger.info(`${inProgress} Write pausing`);
     } else {
       readStream.resume();
-      // console.log(`throttle - ${inProgress} Write resumed`);
+      logger.info(`${inProgress} Write resumed`);
     }
   }
 
@@ -20,7 +20,7 @@ function throttle(readStream, messageDelegator, maxConcurrency) {
     function asyncDone() {
       readStream.resume();
       inProgress--;
-      // console.log(`throttle - ${message.correlationId} - ${inProgress} Write finished`);
+      logger.info(`${message.correlationId} - ${inProgress} Write finished`);
     }
 
     messageDelegator(message).then(asyncDone);
@@ -34,7 +34,7 @@ function throttle(readStream, messageDelegator, maxConcurrency) {
   });
 
   readStream.on("end", () => {
-    console.log("throttle - end reached!");
+    logger.warn("throttle - end reached!");
   });
 }
 

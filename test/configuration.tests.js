@@ -5,6 +5,19 @@ chai.should();
 const getConfiguration = require("../src/configuration");
 
 suite("configuration", () => {
+
+  beforeEach(() => {
+    Reflect.deleteProperty(process.env, "maxConcurrency");
+    Reflect.deleteProperty(process.env, "readHighWaterMark");
+    Reflect.deleteProperty(process.env, "source");
+  });
+
+  afterEach(() => {
+    Reflect.deleteProperty(process.env, "maxConcurrency");
+    Reflect.deleteProperty(process.env, "readHighWaterMark");
+    Reflect.deleteProperty(process.env, "source");
+  });
+
   suite("getConfiguration returns default", () => {
     test("maxConcurrency", () => {
       const config = getConfiguration();
@@ -37,11 +50,6 @@ suite("configuration", () => {
       process.env.readHighWaterMark = 77;
       const config = getConfiguration();
       config.readHighWaterMark.should.equal(77);
-    });
-    afterEach(() => {
-      Reflect.deleteProperty(process.env, "maxConcurrency");
-      Reflect.deleteProperty(process.env, "readHighWaterMark");
-      Reflect.deleteProperty(process.env, "source");
     });
   });
 

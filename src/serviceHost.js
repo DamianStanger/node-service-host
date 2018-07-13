@@ -1,5 +1,6 @@
 const throttle = require("./throttle");
 const getConfiguration = require("./configuration");
+const logger = require("./logger")("serviceHost");
 
 
 function serviceHost(config) {
@@ -8,7 +9,12 @@ function serviceHost(config) {
   const messageDelegator = require("./messageDelegator")(configuration.source);
 
   function register(handler, eventName, version) {
-    messageDelegator.registerHandler(handler, eventName, version);
+    try {
+      messageDelegator.registerHandler(handler, eventName, version);
+    } catch (err) {
+      logger.fatal(err);
+      throw err;
+    }
   }
 
   function start() {

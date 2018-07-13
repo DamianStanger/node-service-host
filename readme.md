@@ -20,10 +20,18 @@ When configuring the service host needs to be given a handler, this handler need
 the message, and a collection of callbacks that give control to the handler on whta to do with the message once all is done.
 success (delete the message), retry (do nothing with the message), or fail (treat the message to an error).
 
+## Config
+export LOGGER_LEVEL=info   # [silent] fatal error warn info debug trace
+export LOGGER_NAME=myApp   # [undefined]
+export maxConcurrency=2     # [1]
+export readHighWaterMark=5  # [10]
+export source=testSource    # [testSource]
+
 ## Example
 to run a simulated full stack test with a fixed set of messages from a testSource run:
 ```
 npm run example
+npm run example | node_modules/pino/bin.js   # will pretty print the pino logs
 node example/server.js
 ```
 This will send 10 messages into the serviceHost simulating a 2 second piece of work inside the handler

@@ -1,6 +1,6 @@
-/* eslint-disable no-process-env,no-console */
-
+/* eslint-disable no-process-env */
 const path = require("path");
+const logger = require("./logger")("serviceHost.configuration");
 
 
 function getConfiguration(config = {}) {
@@ -17,7 +17,7 @@ function getConfiguration(config = {}) {
     sourceFileName
   };
 
-  console.log("configuration - config set to", configuration);
+  logger.info("Config set to", configuration);
 
   const source = require(configuration.sourceFileName)(configuration);
   configuration.source = source;
