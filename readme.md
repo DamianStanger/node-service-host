@@ -23,6 +23,7 @@ success (delete the message), retry (do nothing with the message), or fail (trea
 ## Example
 to run a simulated full stack test with a fixed set of messages from a testSource run:
 ```
+npm run example
 node example/server.js
 ```
 This will send 10 messages into the serviceHost simulating a 2 second piece of work inside the handler
@@ -39,3 +40,11 @@ npm run istsnbul
 npm run nyc
 ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha --ui tdd
 ```
+
+## Roadmap
+* Better logging framework than console.log (turn log level up and down in config, off for tests)
+* AWS source
+* Delete AWS messages on success
+* Send message with failure reason to SNS
+* Injectable messages for testing
+* Handle failures better

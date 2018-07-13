@@ -1,20 +1,17 @@
 /* eslint-disable no-console */
 
 
-function throttle(readStream, eventHandlerMap, maxConcurrency) {
-
-  const messageDelegator = require("./messageDelegator")(readStream, eventHandlerMap);
+function throttle(readStream, messageDelegator, maxConcurrency) {
 
   let inProgress = 0;
-  let total = 0;
 
   function checkConcurrency() {
     if (inProgress >= maxConcurrency) {
       readStream.pause();
-      // console.log(`throttle - ${inProgress}:${total} Write pausing`);
+      // console.log(`throttle - ${inProgress} Write pausing`);
     } else {
       readStream.resume();
-      // console.log(`throttle - ${inProgress}:${total} Write resumed`);
+      // console.log(`throttle - ${inProgress} Write resumed`);
     }
   }
 
@@ -23,8 +20,7 @@ function throttle(readStream, eventHandlerMap, maxConcurrency) {
     function asyncDone() {
       readStream.resume();
       inProgress--;
-      total++;
-      // console.log(`throttle - ${message.correlationId} - ${inProgress}:${total} Write finished`);
+      // console.log(`throttle - ${message.correlationId} - ${inProgress} Write finished`);
     }
 
     messageDelegator(message).then(asyncDone);

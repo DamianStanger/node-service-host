@@ -5,29 +5,14 @@ const getConfiguration = require("./configuration");
 function serviceHost(config) {
 
   const configuration = getConfiguration(config);
-  const eventNameToHandlerMap = new Map();
+  const messageDelegator = require("./messageDelegator")(configuration.source);
 
   function register(handler, eventName, version) {
-
-    let eventVersions = eventNameToHandlerMap.get(eventName);
-    if (eventVersions) {
-      const versionHandler = eventVersions.get(version);
-
-      if (versionHandler) {
-        throw new Error(`A handler already exists for the event ${eventName} version ${version}`);
-      }
-
-      eventVersions.set(version, handler);
-
-    } else {
-      eventVersions = new Map();
-      eventVersions.set(version, handler);
-      eventNameToHandlerMap.set(eventName, eventVersions);
-    }
+    messageDelegator.registerHandler(handler, eventName, version);
   }
 
   function start() {
-    throttle(configuration.source, eventNameToHandlerMap, configuration.maxConcurrency);
+    throttle(configuration.source, messageDelegator.process, configuration.maxConcurrency);
   }
 
   return {register, start};
