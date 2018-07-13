@@ -50,7 +50,6 @@ npm run nyc
 ```
 
 ## Roadmap
-* Better logging framework than console.log (turn log level up and down in config, off for tests)
 * AWS source
 * Delete AWS messages on success
 * Send message with failure reason to SNS

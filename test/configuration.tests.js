@@ -4,6 +4,7 @@ chai.should();
 
 const getConfiguration = require("../src/configuration");
 
+
 suite("configuration", () => {
 
   beforeEach(() => {

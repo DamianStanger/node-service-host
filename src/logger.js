@@ -1,11 +1,11 @@
 /* eslint-disable no-process-env */
 const pino = require("pino");
 
-const globalLevel = process.env.LOGGER_LEVEL || "silent";
-const globalName = process.env.LOGGER_NAME;
 
+function logger(instanceName, instanceLevel) {
 
-function logger(name = globalName, level = globalLevel) {
+  const name = instanceName || process.env.LOGGER_NAME;
+  const level = instanceLevel || process.env.LOGGER_LEVEL || "silent";
 
   const pinoLogger = pino({name, level});
 
