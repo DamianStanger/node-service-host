@@ -1,11 +1,16 @@
 # Service Host
 
 This package contains a service host implementation where in you can host any number of arbitory services inside the host.
-The host pulls data from a source (for example AWS SQS) and sends those messages to one of the configured services.
+The host pulls data from a source (for example AWS SQS) and sends those messages to one of the configured services handlers.
 
 Messages coming out of the source must have a certain shape so that the host can route the message to the correct service.
 If the message does not conform to the presquibed shape it will be sent as is to the first service registerd as long as
 the --strict flag is set to false.
+
+## Usage
+
+An example usage is given in the Example folder which uses the testSource to get its messages. The host works best when passed
+messages in the following format although will work with any message format. its just that the routing will be ignored.
 
 ```json
 {
@@ -16,9 +21,12 @@ the --strict flag is set to false.
 }
 ```
 
-When configuring the service host needs to be given a handler, this handler needs to be a function that takes as arguments
-the message, and a collection of callbacks that give control to the handler on whta to do with the message once all is done.
+When configuring, the service host needs to be given a handler, this handler needs to be a function that takes as arguments
+a message, and a collection of callbacks that give control to the handler on what to do with the message once all is done.
 success (delete the message), retry (do nothing with the message), or fail (treat the message to an error).
+
+These callbacks are all relative to a source. For example an aws sqs source will need to delete messages from the sqs queue
+and an azure source would need to delete messages from azure. The source knows how to deal with messages from that source.
 
 ## Config
 export LOGGER_LEVEL=info   # [silent] fatal error warn info debug trace
@@ -47,6 +55,13 @@ npm run istsnbul
 
 npm run nyc
 ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha --ui tdd --recursive
+```
+
+## eslint
+This package follows the eslint rules and can be checked with
+```
+npm run eslint
+node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js
 ```
 
 ## Roadmap
