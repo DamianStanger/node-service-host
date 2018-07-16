@@ -9,6 +9,7 @@ const config = {
   "maxConcurrency": 1
 };
 
+
 // This is kept so as better to demo what is going on
 // eslint-disable-next-line no-unused-vars
 const dummySourcePromise = new Promise((resolve, reject) => {

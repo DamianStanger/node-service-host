@@ -58,10 +58,12 @@ npm run nyc
 ```
 
 ## eslint
-This package follows the eslint rules and can be checked with
+This package follows the eslint rules and can be checked with and automatically fixed with
 ```
 npm run eslint
 node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js
+npm run eslint-fix
+node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js --fix
 ```
 
 ## Roadmap
