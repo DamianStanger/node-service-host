@@ -8,26 +8,32 @@ const registerEvents = require("../../example/service");
 const config = {
   "maxConcurrency": 1
 };
+
+// This is kept so as better to demo what is going on
+// eslint-disable-next-line no-unused-vars
 const dummySourcePromise = new Promise((resolve, reject) => {
   const dummySource = new Readable({
     "objectMode": true,
     "highWaterMark": 1
   });
   dummySource.success = msg => {
-    resolve(`success-${msg.id}`);
+    resolve(`success-${msg.eventName}-${msg.version}`);
     return dummySourcePromise;
   };
   dummySource.retry = msg => {
-    resolve(`retry-${msg.id}`);
+    resolve(`retry-${msg.eventName}-${msg.version}`);
     return dummySourcePromise;
   };
   dummySource.fail = msg => {
-    reject(`fail-${msg.id}`);
+    resolve(`fail-${msg.eventName}-${msg.version}`);
+    return dummySourcePromise;
+  };
+  dummySource.ignore = msg => {
+    resolve(`ignore-${msg.eventName}-${msg.version}`);
     return dummySourcePromise;
   };
 
   config.source = dummySource;
-
 });
 
 
@@ -35,7 +41,8 @@ suite("The example service", () => {
   test("should call success", done => {
     const serviceHost = serviceHostBuilder(config);
     const message = {
-      "id": "foobar59"
+      "eventName": "orderPlaced",
+      "version": 1
     };
 
     registerEvents(serviceHost, config);
@@ -44,7 +51,7 @@ suite("The example service", () => {
     serviceHost.start();
 
     dummySourcePromise.then(result => {
-      result.should.equal("success-foobar59");
+      result.should.equal("success-orderPlaced-1");
       done();
     }).catch(err => {
       done(err);

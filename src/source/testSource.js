@@ -69,28 +69,37 @@ function getSource(configuration) {
     read() {
       const thisMessage = messages.shift();
       if (thisMessage) {
-        logger.info(`testSource - READ ${thisMessage.correlationId}`);
+        logger.info(`READ ${thisMessage.correlationId}`);
         this.push(thisMessage);
       } else {
-        logger.warn("testSource - READ End");
+        logger.warn("READ message stream empty!");
         this.push(null);
       }
     }
   });
 
   testSource.success = message => {
-    logger.info(`success ${message.correlationId}`);
-    return Promise.resolve();
+    const resolutionMsg = `success ${message.correlationId}`;
+    logger.info(resolutionMsg);
+    return Promise.resolve(resolutionMsg);
   };
 
   testSource.retry = message => {
-    logger.warn(`retry ${message.correlationId}`);
-    return Promise.resolve();
+    const resolutionMsg = `retry ${message.correlationId}`;
+    logger.warn(resolutionMsg);
+    return Promise.resolve(resolutionMsg);
   };
 
   testSource.fail = (message, error) => {
-    logger.error(`fail ${message.correlationId}`, error);
-    return Promise.resolve();
+    const resolutionMsg = `fail ${message.correlationId}`;
+    logger.error(resolutionMsg, error);
+    return Promise.resolve(resolutionMsg);
+  };
+
+  testSource.ignore = message => {
+    const resolutionMsg = `ignore ${message.correlationId}`;
+    logger.info(resolutionMsg);
+    return Promise.resolve(resolutionMsg);
   };
 
   return testSource;

@@ -13,7 +13,7 @@ function orderPlacedHandler(message, success, retry, fail) {
     return new Promise(resolve => setTimeout(resolve, milliSeconds));
   }
 
-  return wait(2000).then(() => {
+  return wait(500).then(() => {
     success(message);
   }).catch(err => {
     const someFatalNonRecoverableErrorOccured = false;

@@ -36,7 +36,7 @@ function messageDelegator(readStream) {
     }
 
     if (!versionHandler) {
-      return readStream.success(message);
+      return readStream.ignore(message);
     }
 
     return versionHandler(message, readStream.success, readStream.retry, readStream.fail).catch(() => {
