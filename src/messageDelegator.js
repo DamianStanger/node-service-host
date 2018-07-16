@@ -40,7 +40,7 @@ function messageDelegator(readStream) {
     }
 
     return versionHandler(message, readStream.success, readStream.retry, readStream.fail).catch(() => {
-      readStream.fail(message);
+      return readStream.fail(message);
     });
   }
 

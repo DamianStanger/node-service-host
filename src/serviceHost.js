@@ -4,11 +4,14 @@ const logger = require("./logger")("serviceHost");
 
 
 function serviceHost(config) {
+  logger.debug("Creating serviceHost");
 
   const configuration = getConfiguration(config);
   const messageDelegator = require("./messageDelegator")(configuration.source);
 
   function register(handler, eventName, version) {
+    logger.debug("Register", eventName, version);
+
     try {
       messageDelegator.registerHandler(handler, eventName, version);
     } catch (err) {
@@ -18,9 +21,11 @@ function serviceHost(config) {
   }
 
   function start() {
+    logger.debug("starting serviceHost");
     throttle(configuration.source, messageDelegator.process, configuration.maxConcurrency);
   }
 
+  logger.debug("Returning serviceHost");
   return {register, start};
 }
 

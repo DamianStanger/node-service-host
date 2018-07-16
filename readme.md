@@ -40,18 +40,20 @@ This will send 10 messages into the serviceHost simulating a 2 second piece of w
 To run all the mocha tests
 ```
 npm test
-node_modules/mocha/bin/mocha -u tdd
+node_modules/mocha/bin/mocha -u tdd --recursive
 
 npm run istsnbul
-./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui tdd
+./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui tdd --recursive
 
 npm run nyc
-./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha --ui tdd
+./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha --ui tdd --recursive
 ```
 
 ## Roadmap
+* Include all source files in the code coverage report
 * AWS source
 * Delete AWS messages on success
 * Send message with failure reason to SNS
 * Injectable messages for testing
+* End to end tests using the injectable messages
 * Handle failures better

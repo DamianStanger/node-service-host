@@ -3,7 +3,7 @@ const sinon = require("sinon");
 const chai = require("chai");
 chai.should();
 
-const logger = require("../src/logger");
+const logger = require("../../src/logger");
 
 
 suite("logger", () => {

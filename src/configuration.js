@@ -7,20 +7,24 @@ function getConfiguration(config = {}) {
 
   const readHighWaterMark = config.readHighWaterMark || process.env.readHighWaterMark || 10;
   const maxConcurrency = config.maxConcurrency || process.env.maxConcurrency || 1;
-  let sourceFileName = config.source || process.env.source || "testSource";
-  // sourceFileName = `.${path.sep}source${path.sep}${sourceFileName}`;
-  sourceFileName = path.join(process.cwd(), "src", "source", sourceFileName);
-
   const configuration = {
     "readHighWaterMark": parseInt(readHighWaterMark, 10),
-    "maxConcurrency": parseInt(maxConcurrency, 10),
-    sourceFileName
+    "maxConcurrency": parseInt(maxConcurrency, 10)
   };
 
-  logger.info("Config set to", configuration);
+  function getSource() {
+    if (config.source && typeof (config.source) === "object") {
+      return config.source;
+    }
 
-  const source = require(configuration.sourceFileName)(configuration);
-  configuration.source = source;
+    let sourceFileName = config.source || process.env.source || "testSource";
+    sourceFileName = path.join(process.cwd(), "src", "source", sourceFileName);
+    return require(sourceFileName)(configuration);
+  }
+
+  configuration.source = getSource();
+
+  logger.debug("Config set to", configuration);
 
   return configuration;
 }

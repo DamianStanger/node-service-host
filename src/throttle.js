@@ -8,10 +8,10 @@ function throttle(readStream, messageDelegator, maxConcurrency) {
   function checkConcurrency() {
     if (inProgress >= maxConcurrency) {
       readStream.pause();
-      logger.info(`${inProgress} Write pausing`);
+      logger.debug(`${inProgress} Write pausing`);
     } else {
       readStream.resume();
-      logger.info(`${inProgress} Write resumed`);
+      logger.debug(`${inProgress} Write resumed`);
     }
   }
 
@@ -20,7 +20,7 @@ function throttle(readStream, messageDelegator, maxConcurrency) {
     function asyncDone() {
       readStream.resume();
       inProgress--;
-      logger.info(`${message.correlationId} - ${inProgress} Write finished`);
+      logger.debug(`${message.correlationId} - ${inProgress} Write finished`);
     }
 
     messageDelegator(message).then(asyncDone);
