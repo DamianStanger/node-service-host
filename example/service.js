@@ -14,13 +14,17 @@ function orderPlacedHandler(message, success, retry, fail) {
   }
 
   return wait(500).then(() => {
+    if (message.payload && message.payload.simulateFailure) {
+      logger.error(`${message.correlationId} - Throwing ${message.payload.simulateFailure}`);
+      throw new Error(message.payload.simulateFailure);
+    }
     success(message);
   }).catch(err => {
-    const someFatalNonRecoverableErrorOccured = false;
+    const someFatalNonRecoverableErrorOccured = err.toString() === "Error: someFatalNonRecoverableErrorOccured";
     if (someFatalNonRecoverableErrorOccured) {
       fail(message, err);
     } else {
-      retry(message);
+      retry(message, err);
     }
   });
 }

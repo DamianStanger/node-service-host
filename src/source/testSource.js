@@ -46,6 +46,7 @@ const unstructuredMessage = {
 function getTestMessages() {
   return [
     messageBuilder().build(),
+    messageBuilder().withPayload({"simulateFailure": "Hardcoded error in the test data"}).build(),
     messageBuilder().withVersion(undefined).build(),
     messageBuilder().withVersion(undefined).withEventName(undefined).build(),
     messageBuilder().withVersion(undefined).withEventName(undefined).withPayload(undefined).build(),
