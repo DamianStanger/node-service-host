@@ -5,22 +5,22 @@ function throttle(readStream, messageDelegator, maxConcurrency) {
 
   let inProgress = 0;
 
-  function checkConcurrency() {
-    if (inProgress >= maxConcurrency) {
-      readStream.pause();
-      logger.debug(`${inProgress} Write pausing`);
-    } else {
-      readStream.resume();
-      logger.debug(`${inProgress} Write resumed`);
-    }
-  }
-
   function callAsync(message) {
+
+    function checkConcurrency() {
+      if (inProgress >= maxConcurrency) {
+        readStream.pause();
+        logger.debug(`${message.correlationId} - processing:${inProgress} pausing`);
+      } else {
+        readStream.resume();
+        logger.debug(`${message.correlationId} - processing:${inProgress} resumed`);
+      }
+    }
 
     function asyncDone() {
       readStream.resume();
       inProgress--;
-      logger.debug(`${message.correlationId} - ${inProgress} Write finished`);
+      logger.debug(`${message.correlationId} - processing:${inProgress} asyncDone`);
     }
 
     messageDelegator(message).then(asyncDone);
@@ -34,7 +34,7 @@ function throttle(readStream, messageDelegator, maxConcurrency) {
   });
 
   readStream.on("end", () => {
-    logger.warn("throttle - end reached!");
+    logger.warn("end reached!");
   });
 }
 

@@ -68,6 +68,7 @@ node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js --fix
 
 ## Roadmap
 * Include all source files in the code coverage report
+* catch all handler if no version was defined in the registration
 * AWS source
 * Delete AWS messages on success
 * Send message with failure reason to SNS

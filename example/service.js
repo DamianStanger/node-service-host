@@ -2,7 +2,7 @@ const logger = require("../src/logger")("example.service");
 
 
 function orderPlacedHandler(message, success, retry, fail) {
-  logger.info("server - orderPlacedHandler processing message", message);
+  logger.info(`${message.correlationId} - orderPlacedHandler processing message`, message);
 
   // This is where you would do some work with the message then call the relevent
   // callback depending on the outcome of the processing.

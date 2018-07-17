@@ -1,18 +1,23 @@
 /* eslint-disable no-undefined */
 
+const logger = require("./logger")("serviceHost.messageDelegator");
+
 
 function messageDelegator(readStream) {
 
   const eventHandlerMap = new Map();
 
   function registerHandler(handler, eventName, version) {
+    logger.debug(`Assigning handler to event:${eventName} version:${version}`)
 
     let eventVersions = eventHandlerMap.get(eventName);
     if (eventVersions) {
       const versionHandler = eventVersions.get(version);
 
       if (versionHandler) {
-        throw new Error(`A handler already exists for the event ${eventName} version ${version}`);
+        const errorTxt = `A handler already exists for the event:${eventName} version:${version}`;
+        logger.fatal(errorTxt)
+        throw new Error(errorTxt);
       }
 
       eventVersions.set(version, handler);
@@ -36,11 +41,13 @@ function messageDelegator(readStream) {
     }
 
     if (!versionHandler) {
+      logger.debug(`${message.correlationId} - Ignoring message with event:${message.eventName} version:${message.version}`);
       return readStream.ignore(message);
     }
 
-    return versionHandler(message, readStream.success, readStream.retry, readStream.fail).catch(() => {
-      return readStream.fail(message);
+    return versionHandler(message, readStream.success, readStream.retry, readStream.fail).catch(err => {
+      logger.error(`${message.correlationId} - Caught error ${err}`);
+      return readStream.fail(message, err);
     });
   }
 

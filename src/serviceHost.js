@@ -10,7 +10,7 @@ function serviceHost(config) {
   const messageDelegator = require("./messageDelegator")(configuration.source);
 
   function register(handler, eventName, version) {
-    logger.debug("Register", eventName, version);
+    logger.debug(`Registering event:${eventName} version:${version}`);
 
     try {
       messageDelegator.registerHandler(handler, eventName, version);
