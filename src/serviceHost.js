@@ -1,6 +1,7 @@
 const throttle = require("./throttle");
 const getConfiguration = require("./configuration");
 const logger = require("./logger")("serviceHost");
+const decodeTransformer = require("./decodeTransformer");
 
 
 function serviceHost(config) {
@@ -22,7 +23,8 @@ function serviceHost(config) {
 
   function start() {
     logger.debug("starting serviceHost");
-    throttle(configuration.source, messageDelegator.process, configuration.maxConcurrency);
+    const pipe = configuration.source.pipe(decodeTransformer());
+    throttle(pipe, messageDelegator.process, configuration.maxConcurrency);
   }
 
   logger.debug("Returning serviceHost");
