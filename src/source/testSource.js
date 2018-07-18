@@ -51,7 +51,7 @@ function getTestMessages() {
     messageBuilder().withVersion(undefined).withEventName(undefined).build(),
     messageBuilder().withVersion(undefined).withEventName(undefined).withPayload(undefined).build(),
     messageBuilder().withVersion(undefined).withEventName(undefined).withPayload(undefined).withCorrelationId(undefined).build(),
-    messageBuilder().withPayload("eyJkYXRhIjoiZm9iYXIifQ==").build(),
+    messageBuilder().withPayload("some non encoded string").build(),
     messageBuilder().withVersion(2).build(),
     messageBuilder().withEventName("orderReceived").build(),
     unstructuredMessage,

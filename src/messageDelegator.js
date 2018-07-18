@@ -8,7 +8,7 @@ function messageDelegator(readStream) {
   const eventHandlerMap = new Map();
 
   function registerHandler(handler, eventName, version) {
-    logger.debug(`Assigning handler to event:${eventName} version:${version}`)
+    logger.debug(`Assigning handler to event:${eventName} version:${version}`);
 
     let eventVersions = eventHandlerMap.get(eventName);
     if (eventVersions) {
@@ -16,7 +16,7 @@ function messageDelegator(readStream) {
 
       if (versionHandler) {
         const errorTxt = `A handler already exists for the event:${eventName} version:${version}`;
-        logger.fatal(errorTxt)
+        logger.fatal(errorTxt);
         throw new Error(errorTxt);
       }
 

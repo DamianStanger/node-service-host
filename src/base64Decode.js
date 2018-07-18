@@ -10,7 +10,9 @@ function base64Decode(encoded, correlationId) {
   try {
     return JSON.parse(decodedMsg);
   } catch (err) {
-    logger.debug(correlationId, `error parsing ${decodedMsg.substr(0,10)}... to JSON`)
+    logger.debug(correlationId, `error parsing:${decodedMsg.substr(0, 10)}... to JSON`);
+
+
     return encoded;
   }
 }

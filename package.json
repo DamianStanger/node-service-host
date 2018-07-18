@@ -7,7 +7,7 @@
     "istanbul": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui tdd --recursive",
     "nyc": "./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha --ui tdd --recursive",
     "example": "node example/server.js",
-    "eslint": "node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js",
+    "eslint": "node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js example/**/*.js",
     "eslint-fix": "node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js --fix"
   },
   "author": "",
