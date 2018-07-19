@@ -30,6 +30,7 @@ function throttle(readStream, messageDelegator, maxConcurrency) {
   }
 
   readStream.on("data", message => {
+    logger.trace("got data:", message);
     callAsync(message);
   });
 
