@@ -13,7 +13,7 @@ function assertSourceIsValid(source) {
 }
 
 
-suite("configuration", () => {
+describe("configuration", () => {
 
   beforeEach(() => {
     Reflect.deleteProperty(process.env, "maxConcurrency");
@@ -27,49 +27,49 @@ suite("configuration", () => {
     Reflect.deleteProperty(process.env, "source");
   });
 
-  suite("getConfiguration returns default", () => {
-    test("maxConcurrency", () => {
+  describe("getConfiguration returns default", () => {
+    it("maxConcurrency", () => {
       const config = getConfiguration();
       config.maxConcurrency.should.equal(1);
     });
-    test("source", () => {
+    it("source", () => {
       const config = getConfiguration();
       assertSourceIsValid(config.source);
     });
-    test("readHighWaterMark", () => {
+    it("readHighWaterMark", () => {
       const config = getConfiguration();
       config.readHighWaterMark.should.equal(10);
     });
   });
 
-  suite("getConfiguration uses environment variables", () => {
-    test("maxConcurrency", () => {
+  describe("getConfiguration uses environment variables", () => {
+    it("maxConcurrency", () => {
       process.env.maxConcurrency = 66;
       const config = getConfiguration();
       config.maxConcurrency.should.equal(66);
     });
-    test("source", () => {
+    it("source", () => {
       process.env.source = "testSource";
       const config = getConfiguration();
       assertSourceIsValid(config.source);
     });
-    test("readHighWaterMark", () => {
+    it("readHighWaterMark", () => {
       process.env.readHighWaterMark = 77;
       const config = getConfiguration();
       config.readHighWaterMark.should.equal(77);
     });
   });
 
-  suite("getConfiguration returns values from passed config", () => {
-    test("maxConcurrency", () => {
+  describe("getConfiguration returns values from passed config", () => {
+    it("maxConcurrency", () => {
       const config = getConfiguration({"maxConcurrency": 111});
       config.maxConcurrency.should.equal(111);
     });
-    test("source", () => {
+    it("source", () => {
       const config = getConfiguration({"source": "testSource"});
       assertSourceIsValid(config.source);
     });
-    test("readHighWaterMark", () => {
+    it("readHighWaterMark", () => {
       const config = getConfiguration({"readHighWaterMark": 222});
       config.readHighWaterMark.should.equal(222);
     });

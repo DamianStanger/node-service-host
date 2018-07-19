@@ -6,7 +6,7 @@ const serviceHostBuilder = require("../../src/serviceHost");
 const registerEvents = require("../../example/service");
 
 
-suite("The example service", () => {
+describe("The example service", () => {
 
   let config;
   let dummySourcePromise;
@@ -43,7 +43,7 @@ suite("The example service", () => {
   });
 
 
-  test("should call success on processing an orderPlaced event", done => {
+  it("should call success on processing an orderPlaced event", done => {
     const serviceHost = serviceHostBuilder(config);
     const message = {
       "eventName": "orderPlaced",
@@ -68,7 +68,7 @@ suite("The example service", () => {
     });
   });
 
-  test("should call ignore an orderCancelled event", done => {
+  it("should call ignore an orderCancelled event", done => {
     const serviceHost = serviceHostBuilder(config);
     const message = {
       "eventName": "orderCancelled",
@@ -88,7 +88,7 @@ suite("The example service", () => {
     });
   });
 
-  test("should call ignore an orderPlaced event with different Version", done => {
+  it("should call ignore an orderPlaced event with different Version", done => {
     const serviceHost = serviceHostBuilder(config);
     const message = {
       "eventName": "orderPlaced",
@@ -108,7 +108,7 @@ suite("The example service", () => {
     });
   });
 
-  test("should call retry when an uncaught error occurs", done => {
+  it("should call retry when an uncaught error occurs", done => {
     const serviceHost = serviceHostBuilder(config);
     const message = {
       "eventName": "orderPlaced",
@@ -131,7 +131,7 @@ suite("The example service", () => {
     });
   });
 
-  test("should call fail when a fatal error occurs", done => {
+  it("should call fail when a fatal error occurs", done => {
     const serviceHost = serviceHostBuilder(config);
     const message = {
       "eventName": "orderPlaced",
