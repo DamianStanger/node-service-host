@@ -60,6 +60,9 @@ function getSqsSource(configuration) {
             message.ReceiptHandle = msg.ReceiptHandle;
             this.push(message);
           });
+        } else {
+          // receive more messages in a recursive interval
+          // pass the config in to determine how long to wait and what batch size to use
         }
       });
     }

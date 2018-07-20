@@ -29,11 +29,19 @@ These callbacks are all relative to a source. For example an aws sqs source will
 and an azure source would need to delete messages from azure. The source knows how to deal with messages from that source.
 
 ## Config
-export LOGGER_LEVEL=info   # [silent] fatal error warn info debug trace
-export LOGGER_NAME=myApp   # [undefined]
-export maxConcurrency=2     # [1]
-export readHighWaterMark=5  # [10]
-export source=testSource    # [testSource]
+```
+export LOGGER_LEVEL=info     # [silent] fatal error warn info debug trace
+export LOGGER_NAME=myApp     # [undefined]
+export maxConcurrency=2      # [1]
+export readHighWaterMark=5   # [1]
+export source=testSource     # [awsSQSSource]
+export MaxNumberOfMessages=5 # [10]
+export QueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName
+
+export AWS_SECRET_ACCESS_KEY=AAAAAAABBBBBBB
+export AWS_ACCESS_KEY_ID=CCCCCCCDDDDDDD
+export AWS_REGION="eu-west-1"
+```
 
 ## Example
 to run a simulated full stack test with a fixed set of messages from a testSource run:
