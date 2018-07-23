@@ -1,3 +1,6 @@
+/* eslint-disable no-process-env */
+
+
 const Readable = require("stream").Readable;
 const AWS = require("aws-sdk");
 const logger = require("../logger")("serviceHost.awsSQSSource");
@@ -5,7 +8,7 @@ const logger = require("../logger")("serviceHost.awsSQSSource");
 
 AWS.config.update({"region": "eu-west-1"});
 const sqs = new AWS.SQS({"apiVersion": "2012-11-05"});
-const queueURL = process.env.QueueUrl;
+const queueURL = process.env.serviceHostQueueUrl;
 
 
 const params = {
@@ -69,18 +72,22 @@ function getSqsSource(configuration) {
   });
 
   sqsSource.success = message => {
+    logger.debug(message.correlationId, "success");
     return new Promise((resolve, reject) => {
       deleteMessage(message, resolve, reject);
     });
   };
 
   sqsSource.retry = message => {
+    logger.debug(message.correlationId, "retry");
   };
 
   sqsSource.fail = (message, error) => {
+    logger.debug(message.correlationId, "fail", error);
   };
 
   sqsSource.ignore = message => {
+    logger.debug(message.correlationId, "ignore");
     return new Promise((resolve, reject) => {
       deleteMessage(message, resolve, reject);
     });

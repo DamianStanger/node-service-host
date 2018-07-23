@@ -4,8 +4,8 @@ const pino = require("pino");
 
 function logger(instanceName, instanceLevel) {
 
-  const name = instanceName || process.env.LOGGER_NAME;
-  const level = instanceLevel || process.env.LOGGER_LEVEL || "silent";
+  const name = instanceName || process.env.serviceHostLoggerName;
+  const level = instanceLevel || process.env.serviceHostLoggerLevel || "silent";
 
   const pinoLogger = pino({name, level});
 

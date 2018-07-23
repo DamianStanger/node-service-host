@@ -6,7 +6,7 @@
     "test": "mocha -u bdd --recursive",
     "istanbul": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd --recursive",
     "nyc": "./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha --ui bdd --recursive",
-    "example": "node example/server.js",
+    "example": "node example/server.js | node_modules/pino/bin.js",
     "eslint": "node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js example/**/*.js",
     "eslint-fix": "node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js --fix"
   },

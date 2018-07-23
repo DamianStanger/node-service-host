@@ -44,17 +44,17 @@ describe("configuration", () => {
 
   describe("getConfiguration uses environment variables", () => {
     it("maxConcurrency", () => {
-      process.env.maxConcurrency = 66;
+      process.env.serviceHostMaxConcurrency = 66;
       const config = getConfiguration();
       config.maxConcurrency.should.equal(66);
     });
     it("source", () => {
-      process.env.source = "testSource";
+      process.env.serviceHostSource = "testSource";
       const config = getConfiguration();
       assertSourceIsValid(config.source);
     });
     it("readHighWaterMark", () => {
-      process.env.readHighWaterMark = 77;
+      process.env.serviceHostReadHighWaterMark = 77;
       const config = getConfiguration();
       config.readHighWaterMark.should.equal(77);
     });

@@ -10,13 +10,13 @@ describe("logger", () => {
   let originalLevel;
 
   beforeEach(() => {
-    originalLevel = process.env.LOGGER_LEVEL;
-    process.env.LOGGER_LEVEL = "trace";
+    originalLevel = process.env.serviceHostLoggerLevel;
+    process.env.serviceHostLoggerLevel = "trace";
     sinon.spy(process.stdout, "write");
   });
 
   afterEach(() => {
-    process.env.LOGGER_LEVEL = originalLevel;
+    process.env.serviceHostLoggerLevel = originalLevel;
     process.stdout.write.restore();
   });
 
@@ -46,14 +46,14 @@ describe("logger", () => {
     });
 
     it("level should default to silent", () => {
-      Reflect.deleteProperty(process.env, "LOGGER_LEVEL");
+      Reflect.deleteProperty(process.env, "serviceHostLoggerLevel");
       const loggerUnderTest = logger();
       loggerUnderTest.fatal("does not make it to stdout");
       process.stdout.write.calledOnce.should.be.false;
     });
 
-    it("level should come from environment variable LOGGER_LEVEL", () => {
-      process.env.LOGGER_LEVEL = "warn";
+    it("level should come from environment variable serviceHostLoggerLevel", () => {
+      process.env.serviceHostLoggerLevel = "warn";
       const loggerUnderTest = logger();
       loggerUnderTest.info("a info message");
       loggerUnderTest.warn("a warning message");
@@ -70,15 +70,15 @@ describe("logger", () => {
     });
 
     it("name should default to undefined", () => {
-      Reflect.deleteProperty(process.env, "LOGGER_NAME");
+      Reflect.deleteProperty(process.env, "serviceHostLoggerName");
       const loggerUnderTest = logger();
       loggerUnderTest.fatal("calling fatal");
       const name = JSON.parse(process.stdout.write.getCall(0).args[0]).name;
       chai.expect(name).to.be.undefined;
     });
 
-    it("name should come from environment variable LOGGER_NAME", () => {
-      process.env.LOGGER_NAME = "foobar";
+    it("name should come from environment variable serviceHostLoggerName", () => {
+      process.env.serviceHostLoggerName = "foobar";
       const loggerUnderTest = logger();
       loggerUnderTest.info("a info message");
       JSON.parse(process.stdout.write.getCall(0).args[0]).name.should.equal("foobar");
