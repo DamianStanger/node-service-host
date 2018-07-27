@@ -1,14 +1,14 @@
 const logger = require("./logger")("serviceHost.throttle");
 
 
-function throttle(readStream, messageDelegator, maxConcurrency) {
+function throttle(readStream, messageDelegator, config) {
 
   let inProgress = 0;
 
   function callAsync(message) {
 
     function checkConcurrency() {
-      if (inProgress >= maxConcurrency) {
+      if (inProgress >= config.maxConcurrency) {
         readStream.pause();
         logger.debug(`${message.correlationId} - processing:${inProgress} pausing`);
       } else {
@@ -25,9 +25,11 @@ function throttle(readStream, messageDelegator, maxConcurrency) {
 
     if (message.isControlMessage) {
       logger.debug(message.correlationId, message.eventName, message.payload);
-      // TODO pause the streams based on config and the type of control message
-      // TODO zero for no waiting about?
-      setTimeout(checkConcurrency, 1000);
+      if (message.payload.error) {
+        setTimeout(checkConcurrency, config.millisecondsToWaitOnError);
+      } else {
+        setTimeout(checkConcurrency, config.millisecondsToWaitOnNoMessages);
+      }
       readStream.pause();
       return;
     }

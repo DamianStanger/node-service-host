@@ -24,7 +24,7 @@ function serviceHost(config) {
   function start() {
     logger.debug("starting serviceHost");
     const pipe = configuration.source.pipe(decodeTransformer());
-    throttle(pipe, messageDelegator.process, configuration.maxConcurrency);
+    throttle(pipe, messageDelegator.process, configuration);
   }
 
   logger.debug("Returning serviceHost");
