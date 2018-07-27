@@ -75,11 +75,9 @@ node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js example/**/*.js --fix
 ```
 
 ## Roadmap
+* Ensure long polling is enabled
+* What other attributes could be useful? can we make that configurable?
 * Include all source files in the code coverage report
 * catch all handler if no version was defined in the registration
-* AWS source
-* Delete AWS messages on success
 * Send message with failure reason to SNS
-* Injectable messages for testing
-* End to end tests using the injectable messages
 * Handle failures better

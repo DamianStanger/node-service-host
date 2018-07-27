@@ -5,11 +5,17 @@ const logger = require("./logger")("serviceHost.configuration");
 
 function getConfiguration(config = {}) {
 
-  const readHighWaterMark = config.readHighWaterMark || process.env.serviceHostReadHighWaterMark || 10;
+  const queueUrl = config.queueUrl || process.env.serviceHostQueueUrl || "";
+  const readHighWaterMark = config.readHighWaterMark || process.env.serviceHostReadHighWaterMark || 1;
   const maxConcurrency = config.maxConcurrency || process.env.serviceHostMaxConcurrency || 1;
+  const millisecondsToWaitOnNoMessages = config.millisecondsToWaitOnNoMessages || process.env.serviceHostMillisecondsToWaitOnNoMessages || 10000;
+  const millisecondsToWaitOnError = config.millisecondsToWaitOnError || process.env.serviceHostMillisecondsToWaitOnError || 10000;
   const configuration = {
+    "queueUrl": queueUrl,
     "readHighWaterMark": parseInt(readHighWaterMark, 10),
-    "maxConcurrency": parseInt(maxConcurrency, 10)
+    "maxConcurrency": parseInt(maxConcurrency, 10),
+    "millisecondsToWaitOnNoMessages": parseInt(millisecondsToWaitOnNoMessages, 10),
+    "millisecondsToWaitOnError": parseInt(millisecondsToWaitOnError, 10)
   };
 
   function getSource() {

@@ -2,6 +2,7 @@ const {Readable} = require("stream");
 const chai = require("chai");
 chai.should();
 
+const messageBuilder = require("../../src/source/messageBuilder");
 const serviceHostBuilder = require("../../src/serviceHost");
 const registerEvents = require("../../example/service");
 
@@ -70,10 +71,7 @@ describe("The example service", () => {
 
   it("should call ignore an orderCancelled event", done => {
     const serviceHost = serviceHostBuilder(config);
-    const message = {
-      "eventName": "orderCancelled",
-      "version": 1
-    };
+    const message = messageBuilder().withEventName("orderCancelled").withVersion(1).build();
 
     registerEvents(serviceHost, config);
     config.source.push(message);
@@ -90,10 +88,7 @@ describe("The example service", () => {
 
   it("should call ignore an orderPlaced event with different Version", done => {
     const serviceHost = serviceHostBuilder(config);
-    const message = {
-      "eventName": "orderPlaced",
-      "version": 2
-    };
+    const message = messageBuilder().withEventName("orderPlaced").withVersion(2).build();
 
     registerEvents(serviceHost, config);
     config.source.push(message);
@@ -110,13 +105,10 @@ describe("The example service", () => {
 
   it("should call retry when an uncaught error occurs", done => {
     const serviceHost = serviceHostBuilder(config);
-    const message = {
-      "eventName": "orderPlaced",
-      "version": 1,
-      "payload": {
-        "simulateFailure": "Hard coded error"
-      }
+    const payload = {
+      "simulateFailure": "Hard coded error"
     };
+    const message = messageBuilder().withEventName("orderPlaced").withVersion(1).withPayload(payload).build();
 
     registerEvents(serviceHost, config);
     config.source.push(message);
@@ -133,13 +125,10 @@ describe("The example service", () => {
 
   it("should call fail when a fatal error occurs", done => {
     const serviceHost = serviceHostBuilder(config);
-    const message = {
-      "eventName": "orderPlaced",
-      "version": 1,
-      "payload": {
-        "simulateFailure": "someFatalNonRecoverableErrorOccured"
-      }
+    const payload = {
+      "simulateFailure": "someFatalNonRecoverableErrorOccured"
     };
+    const message = messageBuilder().withEventName("orderPlaced").withVersion(1).withPayload(payload).build();
 
     registerEvents(serviceHost, config);
     config.source.push(message);

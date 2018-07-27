@@ -1,38 +1,8 @@
 /* eslint-disable no-undefined */
 const {Readable} = require("stream");
 const logger = require("../logger")("serviceHost.testSource");
+const messageBuilder = require("./messageBuilder");
 
-
-let index = 0;
-
-function messageBuilder() {
-  let eventName = "orderPlaced";
-  let version = 1;
-  let payload = "";
-  let correlationId = `00000000-0000-0000-0000-00000000000${index++}`;
-
-  return {
-    "withEventName"(theName) {
-      eventName = theName;
-      return this;
-    },
-    "withVersion"(theVersion) {
-      version = theVersion;
-      return this;
-    },
-    "withPayload"(thePayload) {
-      payload = thePayload;
-      return this;
-    },
-    "withCorrelationId"(theCorrelationId) {
-      correlationId = theCorrelationId;
-      return this;
-    },
-    "build"() {
-      return {eventName, version, payload, correlationId};
-    }
-  };
-}
 
 const unstructuredMessage = {
   "myName": "foo",
@@ -44,18 +14,23 @@ const unstructuredMessage = {
 };
 
 function getTestMessages() {
+  const attributes = {"SentTimestamp": "1532638517885"};
   return [
+    messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("eyJkYXRhIjoiZml6ekJ1enoifQ==").withAttributes(attributes).build(),
+    messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload({"foo2": "bar2"}).build(),
+    messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("").build(),
+    messageBuilder().withVersion(1).withEventName("orderPlaced").build(),
+    messageBuilder().withEventName("orderPlaced").withPayload("unstructured text payload").build(),
+    messageBuilder().withPayload("").build(),
     messageBuilder().build(),
-    messageBuilder().withPayload({"simulateFailure": "Hardcoded error in the test data"}).build(),
-    messageBuilder().withVersion(undefined).build(),
-    messageBuilder().withVersion(undefined).withEventName(undefined).build(),
-    messageBuilder().withVersion(undefined).withEventName(undefined).withPayload(undefined).build(),
-    messageBuilder().withVersion(undefined).withEventName(undefined).withPayload(undefined).withCorrelationId(undefined).build(),
-    messageBuilder().withPayload("some non encoded string").build(),
-    messageBuilder().withVersion(2).build(),
+    messageBuilder().buildControlMessage("no results001"),
+    messageBuilder().withCorrelationId(undefined).build(),
+    messageBuilder().buildControlMessage("no results002"),
+    messageBuilder().buildControlMessage("no results003"),
+    messageBuilder().withVersion(2).withEventName("orderPlaced").withPayload("").build(),
     messageBuilder().withEventName("orderReceived").build(),
     unstructuredMessage,
-    messageBuilder().withPayload("eyJkYXRhIjoiZml6ekJ1enoifQ==").build()
+    messageBuilder().withPayload({"reason": "no messages received"}).buildControlMessage()
   ];
 }
 
@@ -74,7 +49,8 @@ function getSource(configuration) {
         this.push(thisMessage);
       } else {
         logger.warn("READ message stream empty!");
-        this.push(null);
+        const controlMessage = messageBuilder().withPayload({"reason": "no messages received"}).buildControlMessage();
+        this.push(controlMessage);
       }
     }
   });

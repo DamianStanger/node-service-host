@@ -11,7 +11,7 @@ function decodeTransformer() {
 
     transform(message, encoding, next) {
       const transformedMessage = _.cloneDeep(message);
-      if (transformedMessage.payload && typeof transformedMessage.payload === "string") {
+      if (transformedMessage && transformedMessage.payload && typeof transformedMessage.payload === "string") {
         logger.trace(`${message.correlationId} transforming payload:${transformedMessage.payload.substr(0, 10)}...`);
 
         transformedMessage.payload = base64Decode(transformedMessage.payload, message.correlationId);

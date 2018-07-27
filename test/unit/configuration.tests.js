@@ -16,15 +16,19 @@ function assertSourceIsValid(source) {
 describe("configuration", () => {
 
   beforeEach(() => {
-    Reflect.deleteProperty(process.env, "maxConcurrency");
-    Reflect.deleteProperty(process.env, "readHighWaterMark");
-    Reflect.deleteProperty(process.env, "source");
+    Reflect.deleteProperty(process.env, "serviceHostMaxConcurrency");
+    Reflect.deleteProperty(process.env, "serviceHostReadHighWaterMark");
+    Reflect.deleteProperty(process.env, "serviceHostSource");
+    Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnError");
+    Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnNoMessages");
   });
 
   afterEach(() => {
-    Reflect.deleteProperty(process.env, "maxConcurrency");
-    Reflect.deleteProperty(process.env, "readHighWaterMark");
-    Reflect.deleteProperty(process.env, "source");
+    Reflect.deleteProperty(process.env, "serviceHostMaxConcurrency");
+    Reflect.deleteProperty(process.env, "serviceHostReadHighWaterMark");
+    Reflect.deleteProperty(process.env, "serviceHostSource");
+    Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnError");
+    Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnNoMessages");
   });
 
   describe("getConfiguration returns default", () => {
@@ -38,7 +42,15 @@ describe("configuration", () => {
     });
     it("readHighWaterMark", () => {
       const config = getConfiguration();
-      config.readHighWaterMark.should.equal(10);
+      config.readHighWaterMark.should.equal(1);
+    });
+    it("millisecondsToWaitOnNoMessages", () => {
+      const config = getConfiguration();
+      config.millisecondsToWaitOnNoMessages.should.equal(10000);
+    });
+    it("millisecondsToWaitOnError", () => {
+      const config = getConfiguration();
+      config.millisecondsToWaitOnError.should.equal(10000);
     });
   });
 
@@ -58,6 +70,16 @@ describe("configuration", () => {
       const config = getConfiguration();
       config.readHighWaterMark.should.equal(77);
     });
+    it("millisecondsToWaitOnNoMessages", () => {
+      process.env.serviceHostMillisecondsToWaitOnNoMessages = 88;
+      const config = getConfiguration();
+      config.millisecondsToWaitOnNoMessages.should.equal(88);
+    });
+    it("millisecondsToWaitOnError", () => {
+      process.env.serviceHostMillisecondsToWaitOnError = 99;
+      const config = getConfiguration();
+      config.millisecondsToWaitOnError.should.equal(99);
+    });
   });
 
   describe("getConfiguration returns values from passed config", () => {
@@ -72,6 +94,14 @@ describe("configuration", () => {
     it("readHighWaterMark", () => {
       const config = getConfiguration({"readHighWaterMark": 222});
       config.readHighWaterMark.should.equal(222);
+    });
+    it("millisecondsToWaitOnNoMessages", () => {
+      const config = getConfiguration({"millisecondsToWaitOnNoMessages": 333});
+      config.millisecondsToWaitOnNoMessages.should.equal(333);
+    });
+    it("millisecondsToWaitOnError", () => {
+      const config = getConfiguration({"millisecondsToWaitOnError": 444});
+      config.millisecondsToWaitOnError.should.equal(444);
     });
   });
 });
