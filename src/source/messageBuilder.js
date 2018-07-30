@@ -1,6 +1,6 @@
 const uuid = require("uuid/v4");
 
-const controlMessageEventName = "serviceHost.messageBuilder.controlMessage";
+const controlMessageEventName = "serviceHost.controlMessage";
 
 
 function messageBuilder() {
@@ -51,6 +51,9 @@ function messageBuilder() {
     "buildControlMessage"() {
       eventName = controlMessageEventName;
       correlationId = "00000000-0000-0000-0000-000000000000";
+      if (!payload) {
+        payload = {};
+      }
       return buildMessage();
     }
   };

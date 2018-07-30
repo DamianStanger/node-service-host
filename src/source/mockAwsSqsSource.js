@@ -3,8 +3,8 @@ const logger = require("../logger")("serviceHost.mockAwsSqsSource");
 const messageBuilder = require("./messageBuilder");
 
 
-function getSqsSource(configuration) {
-  logger.debug("getSqsSource", configuration);
+function getSource(configuration) {
+  logger.debug("getSource", configuration);
 
   function mockDeleteMessage(deleteParams, callback) {
   // const err = new Error("foobar");
@@ -126,7 +126,7 @@ function getSqsSource(configuration) {
     }
   }
 
-  const mockSqsSource = new Readable({
+  const source = new Readable({
     "objectMode": true,
     "highWaterMark": configuration.readHighWaterMark,
 
@@ -136,30 +136,30 @@ function getSqsSource(configuration) {
     }
   });
 
-  mockSqsSource.success = message => {
+  source.success = message => {
     logger.debug(message.correlationId, "success");
     return new Promise((resolve, reject) => {
-      deleteMessage(message, resolve, reject);
+      return deleteMessage(message, resolve, reject);
     });
   };
 
-  mockSqsSource.retry = message => {
+  source.retry = message => {
     logger.debug(message.correlationId, "retry");
   };
 
-  mockSqsSource.fail = (message, error) => {
+  source.fail = (message, error) => {
     logger.debug(message.correlationId, "fail", error);
   };
 
-  mockSqsSource.ignore = message => {
+  source.ignore = message => {
     logger.debug(message.correlationId, "ignore");
     return new Promise((resolve, reject) => {
-      deleteMessage(message, resolve, reject);
+      return deleteMessage(message, resolve, reject);
     });
   };
 
-  return mockSqsSource;
+  return source;
 }
 
 
-module.exports = getSqsSource;
+module.exports = getSource;
