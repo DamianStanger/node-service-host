@@ -33,13 +33,14 @@ and an azure source would need to delete messages from azure. The source knows h
 ```
 export serviceHostLoggerLevel=info                    # [silent] fatal error warn info debug trace
 export serviceHostLoggerName=myApp                    # [undefined]
-export serviceHostMaxConcurrency=2                    # [1]
+export serviceHostMaxProcessingConcurrency=2          # [1]
 export serviceHostReadHighWaterMark=5                 # [1]
 export serviceHostSource=testSource                   # [awsSqsSource]
-export serviceHostMaxNumberOfMessages=5               # [10]
-export serviceHostMillisecondsToWaitOnError=1000      # [10000]
-export serviceHostMillisecondsToWaitOnNoMessages=1000 # [10000]
-export serviceHostSqsUrl=https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName
+export serviceHostMaxNumberOfMessagesToReadInBatch=5  # [10]
+export serviceHostMillisecondsToWaitOnError=1000      # [10000] // 10 seconds by default
+export serviceHostMillisecondsToWaitOnNoMessages=1000 # [10000] // 10 seconds by default
+export serviceHostWaitTimeSecondsWhilstReading=0      # [20]    // long polling by default
+export serviceHostQueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName
 
 export AWS_SECRET_ACCESS_KEY=AAAAAAABBBBBBB
 export AWS_ACCESS_KEY_ID=CCCCCCCDDDDDDD

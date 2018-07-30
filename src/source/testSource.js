@@ -1,40 +1,10 @@
-const {Readable} = require("stream");
 const logger = require("../logger")("serviceHost.testSource");
 const messageBuilder = require("./messageBuilder");
+const readStream = require("./readStream");
 
 
 function getSource(configuration) {
   logger.debug("getSource", configuration);
-
-  function mockDeleteMessage(deleteParams, callback) {
-    let deleteError;
-    const deleteData = `deletedTheMessage:${deleteParams.ReceiptHandle}`;
-
-    setTimeout(() => {
-      callback(deleteError, deleteData);
-    }, 1000);
-  }
-
-  function deleteMessage(message, resolve, reject) {
-    const deleteParams = {
-      "QueueUrl": configuration.queueUrl,
-      "ReceiptHandle": message.ReceiptHandle
-    };
-
-    logger.trace("deleteMessage:", message);
-    logger.trace("deleteParams:", deleteParams);
-
-    mockDeleteMessage(deleteParams, function (err, data) {
-      if (err) {
-        logger.error("Error deleting msg", err);
-        reject(err);
-      } else {
-        logger.debug("Message deleted", data);
-        resolve(`${message.correlationId} - ignore`);
-      }
-    });
-  }
-
 
   const unstructuredMessage = {
     "myName": "foo",
@@ -45,20 +15,35 @@ function getSource(configuration) {
     }
   };
 
+  function getMessageContainer(message) {
+    return {
+      "Body": JSON.stringify(message),
+      "ReceiptHandle": `testSourceReceiptHandle:${message.correlationId}`,
+      "Attributes": {
+        "SentTimestamp": Math.floor(new Date()),
+        "ApproximateReceiveCount": 1,
+        "SenderId": "ABCDEFG:Damo@example.com",
+        "ApproximateFirstReceiveTimestamp": Math.floor(new Date())
+      }
+    };
+  }
+
   function getTestMessages() {
-    const attributes = {"SentTimestamp": "1532638517885"};
     return [
-      messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("eyJkYXRhIjoiZml6ekJ1enoifQ==").withAttributes(attributes).build(),
-      messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload({"foo2": "bar2"}).build(),
-      messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("").build(),
+      // messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("eyJkYXRhIjoiZml6ekJ1enoifQ==").build(),
+      // messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("ewogICAgImEiOiAiYiIsCiAgICAiYyI6IHsKICAgICAgImQiOiAxMC41CiAgICB9CiAgfQ==").build(),
+      // messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload({"foo2": "bar2"}).build(),
+      // messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("").build(),
+      messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload({"simulateFailure": "someFatalNonRecoverableErrorOccured"}).build(),
+      messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload({"simulateFailure": "someRecoverableError-shouldRetry"}).build(),
       messageBuilder().withVersion(1).withEventName("orderPlaced").build(),
       messageBuilder().withEventName("orderPlaced").withPayload("unstructured text payload").build(),
       messageBuilder().withPayload("").build(),
       messageBuilder().build(),
-      messageBuilder().withPayload({"reason": "no messages received"}).buildControlMessage("no results001"),
+      null,
       messageBuilder().withCorrelationId(null).build(),
-      messageBuilder().withPayload({"reason": "no messages received"}).buildControlMessage("no results002"),
-      messageBuilder().withPayload({"reason": "no messages received"}).buildControlMessage("no results003"),
+      null,
+      null,
       messageBuilder().withVersion(2).withEventName("orderPlaced").withPayload("").build(),
       messageBuilder().withEventName("orderReceived").build(),
       unstructuredMessage
@@ -68,54 +53,34 @@ function getSource(configuration) {
 
   const messages = getTestMessages();
 
-  function receiveMessageBatch(readStream) {
+  function receiveMessage(callback) {
+    const data = {"Messages": []};
+    let err;
+
     const thisMessage = messages.shift();
     if (thisMessage) {
       logger.info(`${thisMessage.correlationId} - READ event:${thisMessage.eventName} version:${thisMessage.version}`);
-      readStream.push(thisMessage);
+      data.Messages.push(getMessageContainer(thisMessage));
     } else {
-      logger.warn("READ message stream empty!");
-      const controlMessage = messageBuilder().withPayload({"reason": "no messages received"}).buildControlMessage();
-      readStream.push(controlMessage);
+      logger.info("READ message stream empty!");
     }
+
+    setTimeout(() => {
+      callback(err, data);
+    }, 1000);
   }
 
-  const source = new Readable({
-    "objectMode": true,
-    "highWaterMark": configuration.readHighWaterMark,
+  function deleteMessage(message, callback) {
+    let deleteError;
+    const deleteData = `deleteDate:${message.ReceiptHandle}`;
 
-    read() {
-      logger.debug("read");
-      receiveMessageBatch(this);
-    }
-  });
+    setTimeout(() => {
+      callback(deleteError, deleteData);
+    }, 1000);
+  }
 
-  source.success = message => {
-    const resolutionMsg = `${message.correlationId} - success`;
-    logger.info(resolutionMsg);
-    return Promise.resolve(resolutionMsg);
-  };
-
-  source.retry = message => {
-    const resolutionMsg = `${message.correlationId} - retry`;
-    logger.warn(resolutionMsg);
-    return Promise.resolve(resolutionMsg);
-  };
-
-  source.fail = (message, error) => {
-    const resolutionMsg = `${message.correlationId} - fail`;
-    logger.error(resolutionMsg, error);
-    return Promise.resolve(resolutionMsg);
-  };
-
-  source.ignore = message => {
-    logger.debug(message.correlationId, "ignore");
-    return new Promise((resolve, reject) => {
-      return deleteMessage(message, resolve, reject);
-    });
-  };
-
-  return source;
+  const source = {receiveMessage, deleteMessage};
+  return readStream(configuration, source);
 }
 
 

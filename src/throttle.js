@@ -8,7 +8,7 @@ function throttle(readStream, messageDelegator, config) {
   function callAsync(message) {
 
     function checkConcurrency() {
-      if (inProgress >= config.maxConcurrency) {
+      if (inProgress >= config.maxProcessingConcurrency) {
         readStream.pause();
         logger.debug(`${message.correlationId} - processing:${inProgress} pausing`);
       } else {
@@ -24,10 +24,12 @@ function throttle(readStream, messageDelegator, config) {
     }
 
     if (message.isControlMessage) {
-      logger.debug(message.correlationId, message.eventName, message.payload);
       if (message.payload.error) {
+        logger.error(message.correlationId, message.eventName, message.payload);
+        // TODO incremental backoff when consecutive errors occur
         setTimeout(checkConcurrency, config.millisecondsToWaitOnError);
       } else {
+        logger.info(message.correlationId, message.eventName, message.payload);
         setTimeout(checkConcurrency, config.millisecondsToWaitOnNoMessages);
       }
       readStream.pause();

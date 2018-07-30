@@ -16,92 +16,137 @@ function assertSourceIsValid(source) {
 describe("configuration", () => {
 
   beforeEach(() => {
-    Reflect.deleteProperty(process.env, "serviceHostMaxConcurrency");
-    Reflect.deleteProperty(process.env, "serviceHostReadHighWaterMark");
-    Reflect.deleteProperty(process.env, "serviceHostSource");
+    Reflect.deleteProperty(process.env, "serviceHostMaxNumberOfMessagesToReadInBatch");
+    Reflect.deleteProperty(process.env, "serviceHostMaxProcessingConcurrency");
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnError");
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnNoMessages");
+    Reflect.deleteProperty(process.env, "serviceHostQueueUrl");
+    Reflect.deleteProperty(process.env, "serviceHostReadHighWaterMark");
+    Reflect.deleteProperty(process.env, "serviceHostSource");
+    Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
   });
 
   afterEach(() => {
-    Reflect.deleteProperty(process.env, "serviceHostMaxConcurrency");
-    Reflect.deleteProperty(process.env, "serviceHostReadHighWaterMark");
-    Reflect.deleteProperty(process.env, "serviceHostSource");
+    Reflect.deleteProperty(process.env, "serviceHostMaxNumberOfMessagesToReadInBatch");
+    Reflect.deleteProperty(process.env, "serviceHostMaxProcessingConcurrency");
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnError");
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnNoMessages");
+    Reflect.deleteProperty(process.env, "serviceHostQueueUrl");
+    Reflect.deleteProperty(process.env, "serviceHostReadHighWaterMark");
+    Reflect.deleteProperty(process.env, "serviceHostSource");
+    Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
   });
 
   describe("getConfiguration returns default", () => {
-    it("maxConcurrency", () => {
+    it("maxNumberOfMessagesToReadInBatch", () => {
       const config = getConfiguration();
-      config.maxConcurrency.should.equal(1);
+      config.maxNumberOfMessagesToReadInBatch.should.equal(10);
     });
-    it("source", () => {
+    it("maxProcessingConcurrency", () => {
       const config = getConfiguration();
-      assertSourceIsValid(config.source);
-    });
-    it("readHighWaterMark", () => {
-      const config = getConfiguration();
-      config.readHighWaterMark.should.equal(1);
-    });
-    it("millisecondsToWaitOnNoMessages", () => {
-      const config = getConfiguration();
-      config.millisecondsToWaitOnNoMessages.should.equal(10000);
+      config.maxProcessingConcurrency.should.equal(1);
     });
     it("millisecondsToWaitOnError", () => {
       const config = getConfiguration();
       config.millisecondsToWaitOnError.should.equal(10000);
     });
-  });
-
-  describe("getConfiguration uses environment variables", () => {
-    it("maxConcurrency", () => {
-      process.env.serviceHostMaxConcurrency = 66;
+    it("millisecondsToWaitOnNoMessages", () => {
       const config = getConfiguration();
-      config.maxConcurrency.should.equal(66);
+      config.millisecondsToWaitOnNoMessages.should.equal(10000);
+    });
+    it("queueUrl", () => {
+      const config = getConfiguration();
+      config.queueUrl.should.equal("");
+    });
+    it("readHighWaterMark", () => {
+      const config = getConfiguration();
+      config.readHighWaterMark.should.equal(1);
     });
     it("source", () => {
-      process.env.serviceHostSource = "testSource";
       const config = getConfiguration();
       assertSourceIsValid(config.source);
     });
-    it("readHighWaterMark", () => {
-      process.env.serviceHostReadHighWaterMark = 77;
+    it("waitTimeSecondsWhilstReading", () => {
       const config = getConfiguration();
-      config.readHighWaterMark.should.equal(77);
+      config.waitTimeSecondsWhilstReading.should.equal(20);
     });
-    it("millisecondsToWaitOnNoMessages", () => {
-      process.env.serviceHostMillisecondsToWaitOnNoMessages = 88;
+  });
+
+  describe("getConfiguration uses environment variables", () => {
+    it("maxNumberOfMessagesToReadInBatch", () => {
+      process.env.serviceHostMaxNumberOfMessagesToReadInBatch = 55;
       const config = getConfiguration();
-      config.millisecondsToWaitOnNoMessages.should.equal(88);
+      config.maxNumberOfMessagesToReadInBatch.should.equal(55);
+    });
+    it("maxProcessingConcurrency", () => {
+      process.env.serviceHostMaxProcessingConcurrency = 66;
+      const config = getConfiguration();
+      config.maxProcessingConcurrency.should.equal(66);
     });
     it("millisecondsToWaitOnError", () => {
       process.env.serviceHostMillisecondsToWaitOnError = 99;
       const config = getConfiguration();
       config.millisecondsToWaitOnError.should.equal(99);
     });
+    it("millisecondsToWaitOnNoMessages", () => {
+      process.env.serviceHostMillisecondsToWaitOnNoMessages = 88;
+      const config = getConfiguration();
+      config.millisecondsToWaitOnNoMessages.should.equal(88);
+    });
+    it("readHighWaterMark", () => {
+      process.env.serviceHostReadHighWaterMark = 77;
+      const config = getConfiguration();
+      config.readHighWaterMark.should.equal(77);
+    });
+    it("queueUrl", () => {
+      process.env.serviceHostQueueUrl = "MyFakeUrl";
+      const config = getConfiguration();
+      config.queueUrl.should.equal("MyFakeUrl");
+    });
+    it("source", () => {
+      process.env.serviceHostSource = "testSource";
+      const config = getConfiguration();
+      assertSourceIsValid(config.source);
+    });
+    it("waitTimeSecondsWhilstReading", () => {
+      process.env.serviceHostWaitTimeSecondsWhilstReading = 44;
+      const config = getConfiguration();
+      config.waitTimeSecondsWhilstReading.should.equal(44);
+    });
   });
 
   describe("getConfiguration returns values from passed config", () => {
-    it("maxConcurrency", () => {
-      const config = getConfiguration({"maxConcurrency": 111});
-      config.maxConcurrency.should.equal(111);
+    it("maxNumberOfMessagesToReadInBatch", () => {
+      const config = getConfiguration({"maxNumberOfMessagesToReadInBatch": 666});
+      config.maxNumberOfMessagesToReadInBatch.should.equal(666);
     });
-    it("source", () => {
-      const config = getConfiguration({"source": "testSource"});
-      assertSourceIsValid(config.source);
+    it("maxProcessingConcurrency", () => {
+      const config = getConfiguration({"maxProcessingConcurrency": 111});
+      config.maxProcessingConcurrency.should.equal(111);
     });
-    it("readHighWaterMark", () => {
-      const config = getConfiguration({"readHighWaterMark": 222});
-      config.readHighWaterMark.should.equal(222);
+    it("millisecondsToWaitOnError", () => {
+      const config = getConfiguration({"millisecondsToWaitOnError": 444});
+      config.millisecondsToWaitOnError.should.equal(444);
     });
     it("millisecondsToWaitOnNoMessages", () => {
       const config = getConfiguration({"millisecondsToWaitOnNoMessages": 333});
       config.millisecondsToWaitOnNoMessages.should.equal(333);
     });
-    it("millisecondsToWaitOnError", () => {
-      const config = getConfiguration({"millisecondsToWaitOnError": 444});
-      config.millisecondsToWaitOnError.should.equal(444);
+    it("readHighWaterMark", () => {
+      const config = getConfiguration({"readHighWaterMark": 222});
+      config.readHighWaterMark.should.equal(222);
+    });
+    it("queueUrl", () => {
+      const config = getConfiguration({"queueUrl": "MyFakeUrlFromConfig"});
+      config.queueUrl.should.equal("MyFakeUrlFromConfig");
+    });
+    it("source", () => {
+      const config = getConfiguration({"source": "testSource"});
+      assertSourceIsValid(config.source);
+    });
+    it("waitTimeSecondsWhilstReading", () => {
+      const config = getConfiguration({"waitTimeSecondsWhilstReading": 555});
+      config.waitTimeSecondsWhilstReading.should.equal(555);
     });
   });
 });

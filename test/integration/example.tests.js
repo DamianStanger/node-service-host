@@ -14,7 +14,7 @@ describe("The example service", () => {
 
   beforeEach(() => {
     config = {
-      "maxConcurrency": 1
+      "maxProcessingConcurrency": 1
     };
 
     dummySourcePromise = new Promise(resolve => {

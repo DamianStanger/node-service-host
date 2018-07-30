@@ -18,6 +18,7 @@ function orderPlacedHandler(message, success, retry, fail) {
       logger.error(`${message.correlationId} - Throwing ${message.payload.simulateFailure}`);
       throw new Error(message.payload.simulateFailure);
     }
+    logger.warn("Success :-)", message);
     success(message);
   }).catch(err => {
     const someFatalNonRecoverableErrorOccured = err.toString() === "Error: someFatalNonRecoverableErrorOccured";
