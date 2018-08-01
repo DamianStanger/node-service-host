@@ -89,12 +89,11 @@ node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js example/**/*.js --fix
 
 
 ## Roadmap
-* Ensure long polling is enabled
-* What other attributes could be useful? can we make that configurable?
+* Tests for all the functionality
 * Include all source files in the code coverage report
 * Catch all handler if no version was defined in the registration
 * Send message with failure reason to SNS
-* Handle failures better
+* Ensure all failures are handled
 
 ### Future features
 #### Cron job source
@@ -104,4 +103,7 @@ Question: how accurate would we want this to be? if we wanted a message every 5 
 maybe sending out these nothing to do messages would not be a good idea, rather do nothing until the time needed
 #### Health check messages
 How can we get this into the normal source. maybe a transformer stream that also injects extra messages into the pipe?
-would this be on a every 10 messages you send a healthcheck type of thing, or every 60 seconds?
+would this be on a every 10 messages you send a healthcheck type of thing, or every 60 seconds? also send on this message
+statistics about the throughput in the last minute.
+Send this message to a writer (in the first place console, but also SNS, allow it to be configurable). I see this as a
+handler that is always present and is setup to handle the control messages.
