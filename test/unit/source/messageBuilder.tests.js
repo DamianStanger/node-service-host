@@ -42,6 +42,22 @@ describe("messageBuilder", () => {
     message.version.should.equal("VERSION");
   });
 
+  it("should use passed values when building a control message", () => {
+    const message = messageBuilder()
+      .withAttributes("ATTRIBUTE")
+      .withCorrelationId("CORRELATION")
+      .withEventName("EVENT")
+      .withPayload("PAY")
+      .withVersion("VERSION")
+      .buildControlMessage();
+
+    message.attributes.should.equal("ATTRIBUTE");
+    message.correlationId.should.equal("00000000-0000-0000-0000-000000000000");
+    message.eventName.should.equal("serviceHost.controlMessage");
+    message.payload.should.equal("PAY");
+    message.version.should.equal("VERSION");
+  });
+
 
   describe("isControlMessage", () => {
     it("should be true for control messages", () => {
