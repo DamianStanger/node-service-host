@@ -58,4 +58,55 @@ describe("messageDelegator", () => {
       result.should.equal(43);
     });
   });
+
+  it("should throw an exception if two handlers with same event and version are registered", () => {
+    const mockHandler1 = sinon.fake();
+    const mockHandler2 = sinon.fake();
+    const mockReadStream = {};
+    const eventName = "event1";
+    const version = 1.234;
+
+    const messageDelegator = getMessageDelegator(mockReadStream);
+    messageDelegator.registerHandler(mockHandler1, eventName, version);
+    try {
+      messageDelegator.registerHandler(mockHandler2, eventName, version);
+      chai.fail("regiserHandler should have failed"); // TODO fix this so it fails properly
+    } catch (err) {
+      err.message.should.equal("A handler already exists for the event:event1 version:1.234");
+    }
+  });
+
+  it("should use the messages version number to run the right handler", () => {
+    const handlersPromise = new Promise(resolve => resolve(25));
+    const mockHandler1 = sinon.fake();
+    const mockHandler2 = sinon.fake.returns(handlersPromise);
+    const mockReadStream = {};
+    const message = messageBuilder().withVersion(2.5).build();
+
+    const messageDelegator = getMessageDelegator(mockReadStream);
+    messageDelegator.registerHandler(mockHandler1, message.eventName, 2);
+    messageDelegator.registerHandler(mockHandler2, message.eventName, 2.5);
+    const actual = messageDelegator.process(message);
+
+    return actual.then(result => {
+      result.should.equal(25);
+    });
+  });
+
+  it("should use the undefined version handler if no handler exists for that exact version", () => {
+    const handlersPromise = new Promise(resolve => resolve(69));
+    const mockHandler = sinon.fake.returns(handlersPromise);
+    const mockReadStream = {};
+    const message = messageBuilder().withVersion(4).build();
+    let undefinedVersion;
+
+    const messageDelegator = getMessageDelegator(mockReadStream);
+    messageDelegator.registerHandler(mockHandler, message.eventName, undefinedVersion);
+    const actual = messageDelegator.process(message);
+
+    return actual.then(result => {
+      result.should.equal(69);
+    });
+  });
+
 });
