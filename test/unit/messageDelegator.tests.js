@@ -1,5 +1,6 @@
 const sinon = require("sinon");
 const chai = require("chai");
+const assert = chai.assert;
 chai.should();
 
 const getMessageDelegator = require("../../src/messageDelegator");
@@ -70,7 +71,7 @@ describe("messageDelegator", () => {
     messageDelegator.registerHandler(mockHandler1, eventName, version);
     try {
       messageDelegator.registerHandler(mockHandler2, eventName, version);
-      chai.fail("regiserHandler should have failed"); // TODO fix this so it fails properly
+      assert.fail("regiserHandler should have failed");
     } catch (err) {
       err.message.should.equal("A handler already exists for the event:event1 version:1.234");
     }
