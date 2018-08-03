@@ -32,7 +32,7 @@ function getReadStream(configuration, source) {
           // TODO Should this have a back off mechanisum for repeat failures?
           receiveInProgress = false;
           const payload = {
-            "reason": "receiveMessageBatch got an error calling SQS",
+            "reason": "receiveMessageBatch got an error from the source",
             "error": err
           };
           logger.error(payload.reason, JSON.stringify(payload.error));
