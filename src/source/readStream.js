@@ -25,11 +25,12 @@ function getReadStream(configuration, source) {
     if (receiveInProgress) {
       logger.debug("receive is in progress, skipping read this time");
     } else {
+      logger.debug("set receiveInProgress = true");
       receiveInProgress = true;
       source.receiveMessage((err, data) => {
         if (err) {
 
-          // TODO Should this have a back off mechanisum for repeat failures?
+          // TODO Should this have a back off mechanisum for repeat failures? (maybe in the throttle)
           receiveInProgress = false;
           const payload = {
             "reason": "receiveMessageBatch got an error from the source",

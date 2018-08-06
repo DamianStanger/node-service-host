@@ -53,7 +53,9 @@ It is possible to pass the serviceHost... config into the serviceHost when it is
 ## Example
 To run a simulated full stack test with a fixed set of messages from a testSource run:
 ```
+export serviceHostLoggerLevel=trace                 # [silent] fatal error warn info debug trace
 export serviceHostSource=testSource
+
 npm run example                                     # Run the example server with pretty printed logs
 node example/server.js                              # Get the raw logs to the console
 node example/server.js | node_modules/pino/bin.js   # Will pretty print the pino logs
@@ -107,3 +109,14 @@ would this be on a every 10 messages you send a healthcheck type of thing, or ev
 statistics about the throughput in the last minute.
 Send this message to a writer (in the first place console, but also SNS, allow it to be configurable). I see this as a
 handler that is always present and is setup to handle the control messages.
+
+
+## Limitations
+### Read stream concurrency
+Currently only one call to the source can be in progress at any one time. so if you have a slow network connection to sqs say
+the rate of messages into the pipe will be limited by the rate at which a single connection to sqs can deliver messages. Setting
+the high watermark on the read stream will not make any difference as the logic inside the readstream enforces one at a time
+logic to the source.
+
+Im thinking on how this can best be overcome but right now for my use case where we host the services on EC2 instances and
+these services are slower than the time it takes to read messages off the sqs queue it is not an issue for us at this moment.

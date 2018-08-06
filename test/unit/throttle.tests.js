@@ -1,4 +1,3 @@
-const sinon = require("sinon");
 const chai = require("chai");
 chai.should();
 const {Readable} = require("stream");
