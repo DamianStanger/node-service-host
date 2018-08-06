@@ -4,10 +4,10 @@ const readStream = require("./readStream");
 
 
 AWS.config.update({"region": "eu-west-1"});
-const sqs = new AWS.SQS({"apiVersion": "2012-11-05"});
+const awsSqs = new AWS.SQS({"apiVersion": "2012-11-05"});
 
 
-function getSource(configuration) {
+function getSource(configuration, sqs = awsSqs) {
 
   const awsParams = {
     "AttributeNames": [
