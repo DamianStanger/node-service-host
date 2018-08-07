@@ -92,8 +92,7 @@ node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js example/**/*.js --fix
 
 ## Roadmap
 * No need for readHighWatermark (remove it)
-* Tests for all the functionality
-* Include all source files in the code coverage report
+* remove/refactor the mockAwsSqsSource
 * Catch all handler if no version was defined in the registration
 * Send message with failure reason to SNS
 * Ensure all failures are handled
