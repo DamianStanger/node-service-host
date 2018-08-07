@@ -93,6 +93,8 @@ node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js example/**/*.js --fix
 * Catch all handler if no version was defined in the registration
 * Send message with failure reason to SNS
 * Ensure all failures are handled
+* Stop the streams when the end is reached (throttle)
+
 
 ### Future features
 #### Cron job source
