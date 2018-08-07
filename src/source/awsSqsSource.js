@@ -7,7 +7,7 @@ AWS.config.update({"region": "eu-west-1"});
 const awsSqs = new AWS.SQS({"apiVersion": "2012-11-05"});
 
 
-function getSource(configuration, sqs = awsSqs) {
+function getSource(configuration, getReadStream = readStream, sqs = awsSqs) {
 
   const awsParams = {
     "AttributeNames": [
@@ -40,7 +40,7 @@ function getSource(configuration, sqs = awsSqs) {
   }
 
   const source = {receiveMessage, deleteMessage};
-  return readStream(configuration, source);
+  return getReadStream(configuration, source);
 }
 
 
