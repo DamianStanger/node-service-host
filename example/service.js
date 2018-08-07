@@ -13,7 +13,7 @@ function orderPlacedHandler(message, success, retry, fail) {
     return new Promise(resolve => setTimeout(resolve, milliSeconds));
   }
 
-  return wait(1000).then(() => {
+  return wait(500).then(() => {
     if (message.payload && message.payload.simulateFailure) {
       logger.error(`${message.correlationId} - Throwing ${message.payload.simulateFailure}`);
       throw new Error(message.payload.simulateFailure);

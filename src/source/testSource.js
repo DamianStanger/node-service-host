@@ -30,10 +30,10 @@ function getSource(configuration) {
 
   function getTestMessages() {
     return [
-      // messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("eyJkYXRhIjoiZml6ekJ1enoifQ==").build(),
-      // messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("ewogICAgImEiOiAiYiIsCiAgICAiYyI6IHsKICAgICAgImQiOiAxMC41CiAgICB9CiAgfQ==").build(),
-      // messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload({"foo2": "bar2"}).build(),
-      // messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("").build(),
+      messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("eyJkYXRhIjoiZml6ekJ1enoifQ==").build(),
+      messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("ewogICAgImEiOiAiYiIsCiAgICAiYyI6IHsKICAgICAgImQiOiAxMC41CiAgICB9CiAgfQ==").build(),
+      messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload({"foo2": "bar2"}).build(),
+      messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload("").build(),
       messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload({"simulateFailure": "someFatalNonRecoverableErrorOccured"}).build(),
       messageBuilder().withVersion(1).withEventName("orderPlaced").withPayload({"simulateFailure": "someRecoverableError-shouldRetry"}).build(),
       messageBuilder().withVersion(1).withEventName("orderPlaced").build(),
@@ -48,6 +48,16 @@ function getSource(configuration) {
       messageBuilder().withEventName("orderReceived").build(),
       unstructuredMessage
     ];
+  }
+
+
+  function deleteMessage(message, callback) {
+    let deleteError;
+    const deleteData = `deleteDate:${message.ReceiptHandle}`;
+
+    setTimeout(() => {
+      callback(deleteError, deleteData);
+    }, 500);
   }
 
 
@@ -67,16 +77,7 @@ function getSource(configuration) {
 
     setTimeout(() => {
       callback(err, data);
-    }, 1000);
-  }
-
-  function deleteMessage(message, callback) {
-    let deleteError;
-    const deleteData = `deleteDate:${message.ReceiptHandle}`;
-
-    setTimeout(() => {
-      callback(deleteError, deleteData);
-    }, 1000);
+    }, 500);
   }
 
   const source = {receiveMessage, deleteMessage};
