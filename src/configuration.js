@@ -6,7 +6,6 @@ const logger = require("./logger")("serviceHost.configuration");
 function getConfiguration(config = {}) {
 
   const queueUrl = config.queueUrl || process.env.serviceHostQueueUrl || "";
-  const readHighWaterMark = config.readHighWaterMark || process.env.serviceHostReadHighWaterMark || 1;
   const maxNumberOfMessagesToReadInBatch = config.maxNumberOfMessagesToReadInBatch || process.env.serviceHostMaxNumberOfMessagesToReadInBatch || 10;
   const maxProcessingConcurrency = config.maxProcessingConcurrency || process.env.serviceHostMaxProcessingConcurrency || 1;
   const millisecondsToWaitOnNoMessages = config.millisecondsToWaitOnNoMessages || process.env.serviceHostMillisecondsToWaitOnNoMessages || 10000;
@@ -15,7 +14,6 @@ function getConfiguration(config = {}) {
 
   const configuration = {
     "queueUrl": queueUrl,
-    "readHighWaterMark": parseInt(readHighWaterMark, 10),
     "maxNumberOfMessagesToReadInBatch": parseInt(maxNumberOfMessagesToReadInBatch, 10),
     "maxProcessingConcurrency": parseInt(maxProcessingConcurrency, 10),
     "millisecondsToWaitOnNoMessages": parseInt(millisecondsToWaitOnNoMessages, 10),

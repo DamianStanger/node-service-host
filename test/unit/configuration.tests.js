@@ -21,7 +21,6 @@ describe("configuration", () => {
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnError");
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnNoMessages");
     Reflect.deleteProperty(process.env, "serviceHostQueueUrl");
-    Reflect.deleteProperty(process.env, "serviceHostReadHighWaterMark");
     Reflect.deleteProperty(process.env, "serviceHostSource");
     Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
   });
@@ -32,7 +31,6 @@ describe("configuration", () => {
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnError");
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnNoMessages");
     Reflect.deleteProperty(process.env, "serviceHostQueueUrl");
-    Reflect.deleteProperty(process.env, "serviceHostReadHighWaterMark");
     Reflect.deleteProperty(process.env, "serviceHostSource");
     Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
   });
@@ -57,10 +55,6 @@ describe("configuration", () => {
     it("queueUrl", () => {
       const config = getConfiguration();
       config.queueUrl.should.equal("");
-    });
-    it("readHighWaterMark", () => {
-      const config = getConfiguration();
-      config.readHighWaterMark.should.equal(1);
     });
     it("source", () => {
       const config = getConfiguration();
@@ -92,11 +86,6 @@ describe("configuration", () => {
       process.env.serviceHostMillisecondsToWaitOnNoMessages = 88;
       const config = getConfiguration();
       config.millisecondsToWaitOnNoMessages.should.equal(88);
-    });
-    it("readHighWaterMark", () => {
-      process.env.serviceHostReadHighWaterMark = 77;
-      const config = getConfiguration();
-      config.readHighWaterMark.should.equal(77);
     });
     it("queueUrl", () => {
       process.env.serviceHostQueueUrl = "MyFakeUrl";
@@ -131,10 +120,6 @@ describe("configuration", () => {
     it("millisecondsToWaitOnNoMessages", () => {
       const config = getConfiguration({"millisecondsToWaitOnNoMessages": 333});
       config.millisecondsToWaitOnNoMessages.should.equal(333);
-    });
-    it("readHighWaterMark", () => {
-      const config = getConfiguration({"readHighWaterMark": 222});
-      config.readHighWaterMark.should.equal(222);
     });
     it("queueUrl", () => {
       const config = getConfiguration({"queueUrl": "MyFakeUrlFromConfig"});

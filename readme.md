@@ -34,7 +34,6 @@ and an azure source would need to delete messages from azure. The source knows h
 export serviceHostLoggerLevel=info                    # [silent] fatal error warn info debug trace
 export serviceHostLoggerName=myApp                    # [undefined]
 export serviceHostMaxProcessingConcurrency=2          # [1]
-export serviceHostReadHighWaterMark=5                 # [1]
 export serviceHostSource=testSource                   # [awsSqsSource]
 export serviceHostMaxNumberOfMessagesToReadInBatch=5  # [10]
 export serviceHostMillisecondsToWaitOnError=1000      # [10000] // 10 seconds by default
@@ -91,7 +90,6 @@ node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js example/**/*.js --fix
 
 
 ## Roadmap
-* No need for readHighWatermark (remove it)
 * remove/refactor the mockAwsSqsSource
 * Catch all handler if no version was defined in the registration
 * Send message with failure reason to SNS

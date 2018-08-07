@@ -71,7 +71,7 @@ function getReadStream(configuration, source) {
 
   const readStream = new Readable({
     "objectMode": true,
-    "highWaterMark": configuration.readHighWaterMark,
+    "highWaterMark": 1,
 
     read() {
       logger.debug("read called");
