@@ -55,13 +55,13 @@ To run a simulated full stack test with a fixed set of messages from a testSourc
 export serviceHostLoggerLevel=trace                 # [silent] fatal error warn info debug trace
 export serviceHostSource=testSource
 
-npm run example                                     # Run the example server with pretty printed logs
+npm start                                           # Run the example server with pretty printed logs
 node example/server.js                              # Get the raw logs to the console
 node example/server.js | node_modules/pino/bin.js   # Will pretty print the pino logs
 ```
 This will send a number of messages into the serviceHost with a simulated 2 second piece of work inside the handler.
 
-To run the example service plugged into the real awsSqsSource just run ```npm run example``` with no env config. The
+To run the example service plugged into the real awsSqsSource just run ```npm start``` with no env config. The
 default source is the awsSqsSource.
 
 
