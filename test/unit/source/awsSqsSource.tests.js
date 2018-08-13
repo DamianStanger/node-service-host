@@ -1,3 +1,4 @@
+const fail = require("chai").fail;
 const chai = require("chai");
 chai.should();
 
@@ -14,18 +15,28 @@ describe("awsSqsSource", () => {
   };
 
   let actualDeleteMessageParams;
-  let actualDeleteMessageCallback;
   let actualReceiveMessageParams;
   let actualReceiveMessageCallback;
 
   const fakeAwsSqs = {
     "deleteMessage": (params, callback) => {
       actualDeleteMessageParams = params;
-      actualDeleteMessageCallback = callback;
+      const error = null;
+      const data = {"name": "fakeAwsSqs_deleteMessage_data"};
+      callback(error, data);
     },
     "receiveMessage": (params, callback) => {
       actualReceiveMessageParams = params;
       actualReceiveMessageCallback = callback;
+    }
+  };
+
+  const fakeAwsSqsWithErrors = {
+    "deleteMessage": (params, callback) => {
+      actualDeleteMessageParams = params;
+      const error = new Error("fakeAwsSqsWithErrors_deleteMessage_error");
+      const data = {"name": "fakeAwsSqsWithErrors_deleteMessage_data"};
+      callback(error, data);
     }
   };
 
@@ -39,12 +50,11 @@ describe("awsSqsSource", () => {
   }
 
   beforeEach(() => {
-    actualDeleteMessageParams = undefined;
-    actualDeleteMessageCallback = undefined;
-    actualReceiveMessageParams = undefined;
-    actualReceiveMessageCallback = undefined;
-    actualSource = undefined;
-    actualConfig = undefined;
+    actualDeleteMessageParams = null;
+    actualReceiveMessageParams = null;
+    actualReceiveMessageCallback = null;
+    actualSource = null;
+    actualConfig = null;
   });
 
 
@@ -53,45 +63,105 @@ describe("awsSqsSource", () => {
 
     sqsAwsSource.should.equal(fakeReadStream);
     actualConfig.should.equal(configuration);
-    (typeof actualSource.deleteMessage).should.equal("function");
     (typeof actualSource.receiveMessage).should.equal("function");
+    (typeof actualSource.ignore).should.equal("function");
+    (typeof actualSource.success).should.equal("function");
+    (typeof actualSource.retry).should.equal("function");
+    (typeof actualSource.fail).should.equal("function");
   });
 
   describe("the returned readStream", () => {
-    it("Should call receiveMessage", () => {
-      const fakeCallback = {"name": "myFakeCallback-receiveMessage"};
-      getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqs);
 
-      actualSource.receiveMessage(fakeCallback);
+    describe("receiveMessage", () => {
+      it("Should call receiveMessage on the source", () => {
+        const fakeCallback = {"name": "myFakeCallback-receiveMessage"};
+        getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqs);
 
-      actualReceiveMessageCallback.should.equal(fakeCallback);
-      actualReceiveMessageParams.should.deep.equal({
-        "AttributeNames": [
-          "All"
-        ],
-        "MaxNumberOfMessages": 1111,
-        "MessageAttributeNames": [
-          "All"
-        ],
-        "QueueUrl": "myQueueUrlFromConfig",
-        "WaitTimeSeconds": 2222
+        actualSource.receiveMessage(fakeCallback);
+
+        actualReceiveMessageCallback.should.equal(fakeCallback);
+        actualReceiveMessageParams.should.deep.equal({
+          "AttributeNames": [
+            "All"
+          ],
+          "MaxNumberOfMessages": 1111,
+          "MessageAttributeNames": [
+            "All"
+          ],
+          "QueueUrl": "myQueueUrlFromConfig",
+          "WaitTimeSeconds": 2222
+        });
       });
     });
 
-    it("Should call deleteMessage", () => {
-      const fakeCallback = {"name": "myFakeCallback-deleteMessage"};
+    describe("success", () => {
+      it("Should call deleteMessage on the source", () => {
+        const message = {"ReceiptHandle": "myReceiptHandleFromMessage"};
+        getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqs);
+
+        return actualSource.success(message).then(data => {
+          actualDeleteMessageParams.should.deep.equal({
+            "QueueUrl": "myQueueUrlFromConfig",
+            "ReceiptHandle": "myReceiptHandleFromMessage"
+          });
+          data.name.should.equal("fakeAwsSqs_deleteMessage_data");
+        });
+      });
+
+      it("Should reject the promise on error", () => {
+        const message = {"ReceiptHandle": "myReceiptHandleFromMessage"};
+        getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqsWithErrors);
+
+        return actualSource.success(message)
+          .then(() => fail("should throw error"))
+          .catch(err => err.message.should.equal("fakeAwsSqsWithErrors_deleteMessage_error"));
+      });
+    });
+  });
+
+  describe("ignore", () => {
+    it("Should call deleteMessage on the source", () => {
       const message = {"ReceiptHandle": "myReceiptHandleFromMessage"};
       getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqs);
 
-      actualSource.deleteMessage(message, fakeCallback);
-
-      actualDeleteMessageCallback.should.equal(fakeCallback);
-      actualDeleteMessageParams.should.deep.equal({
-        "QueueUrl": "myQueueUrlFromConfig",
-        "ReceiptHandle": "myReceiptHandleFromMessage"
+      return actualSource.ignore(message).then(data => {
+        actualDeleteMessageParams.should.deep.equal({
+          "QueueUrl": "myQueueUrlFromConfig",
+          "ReceiptHandle": "myReceiptHandleFromMessage"
+        });
+        data.name.should.equal("fakeAwsSqs_deleteMessage_data");
       });
     });
 
+    it("Should reject the promise on error", () => {
+      const message = {"ReceiptHandle": "myReceiptHandleFromMessage"};
+      getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqsWithErrors);
+
+      return actualSource.ignore(message)
+        .then(() => fail("should throw error"))
+        .catch(err => err.message.should.equal("fakeAwsSqsWithErrors_deleteMessage_error"));
+    });
   });
 
+  describe("retry", () => {
+    it("Should do nothing", () => {
+      const message = {"ReceiptHandle": "myReceiptHandleFromMessage"};
+      getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqs);
+
+      return actualSource.retry(message).then(() => {});
+
+      // TODO Assert some things
+    });
+  });
+
+  describe("fail", () => {
+    it("Should do nothing", () => {
+      const message = {"ReceiptHandle": "myReceiptHandleFromMessage"};
+      getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqs);
+
+      return actualSource.fail(message).then(() => {});
+
+      // TODO Assert some things
+    });
+  });
 });

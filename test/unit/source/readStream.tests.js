@@ -180,10 +180,10 @@ describe("readStream", () => {
       (typeof (readStream.success)).should.equals("function");
     });
 
-    it("should call deleteMessage", () => {
+    it("should call success on the source", () => {
       const message = messageBuilder().build();
       const source = {
-        "deleteMessage": (msg, fn) => fn()
+        "success": msg => new Promise(resolve => resolve(msg))
       };
       const readStream = getReadStream(defaultConfig, source);
 
@@ -191,25 +191,6 @@ describe("readStream", () => {
         .then(msg => {
           msg.should.equal(message);
         });
-    });
-
-    describe("when the deleteMessage passes an error", () => {
-      it("should reject the promise", () => {
-        const message = messageBuilder().build();
-        const thrownError = new Error("FooBar");
-        const source = {
-          "deleteMessage": (msg, fn) => fn(thrownError)
-        };
-        const readStream = getReadStream(defaultConfig, source);
-
-        return readStream.success(message)
-          .then(() => {
-            assert.fail("should reject the promise");
-          })
-          .catch(err => {
-            err.should.equal(thrownError);
-          });
-      });
     });
   });
 
@@ -219,10 +200,10 @@ describe("readStream", () => {
       (typeof (readStream.ignore)).should.equals("function");
     });
 
-    it("should call deleteMessage", () => {
+    it("should call ignore on the source", () => {
       const message = messageBuilder().build();
       const source = {
-        "deleteMessage": (msg, fn) => fn()
+        "ignore": msg => new Promise(resolve => resolve(msg))
       };
       const readStream = getReadStream(defaultConfig, source);
 
@@ -239,10 +220,19 @@ describe("readStream", () => {
       (typeof (readStream.retry)).should.equals("function");
     });
 
-    it("should do nothing (yet)", () => {
-      const readStream = getReadStream({}, {});
-      readStream.retry({}, {});
+    it("should call retry on the source", () => {
+      const message = messageBuilder().build();
+      const source = {
+        "retry": msg => new Promise(resolve => resolve(msg))
+      };
+      const readStream = getReadStream(defaultConfig, source);
+
+      return readStream.retry(message)
+        .then(msg => {
+          msg.should.equal(message);
+        });
     });
+
   });
 
   describe("the fail function", () => {
@@ -251,9 +241,18 @@ describe("readStream", () => {
       (typeof (readStream.fail)).should.equals("function");
     });
 
-    it("should do nothing (yet)", () => {
-      const readStream = getReadStream({}, {});
-      readStream.fail({}, {});
+    it("should call fail on the source", () => {
+      const message = messageBuilder().build();
+      const source = {
+        "fail": msg => new Promise(resolve => resolve(msg))
+      };
+      const readStream = getReadStream(defaultConfig, source);
+
+      return readStream.fail(message)
+        .then(msg => {
+          msg.should.equal(message);
+        });
     });
+
   });
 });

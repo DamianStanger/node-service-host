@@ -25,21 +25,53 @@ function getSource(configuration, getReadStream = readStream, sqs = awsSqs) {
   logger.debug("getSource", configuration, awsParams);
 
 
-  function deleteMessage(message, callback) {
+  function deleteMessageFromSqs(message, resolve, reject) {
     const deleteParams = {
       "QueueUrl": configuration.queueUrl,
       "ReceiptHandle": message.ReceiptHandle
     };
 
     logger.trace("deleteParams:", deleteParams);
-    sqs.deleteMessage(deleteParams, callback);
+
+    sqs.deleteMessage(deleteParams, (err, data) => {
+      if (err) {
+        logger.error(message.correlationId, "Error deleting msg");
+        logger.error(err);
+        reject(err);
+      } else {
+        logger.debug("Message deleted", data);
+        resolve(data);
+      }
+    });
   }
+
 
   function receiveMessage(callback) {
     sqs.receiveMessage(awsParams, callback);
   }
 
-  const source = {receiveMessage, deleteMessage};
+  function ignore(message) {
+    return new Promise((resolve, reject) => {
+      deleteMessageFromSqs(message, resolve, reject);
+    });
+  }
+
+  function success(message) {
+    return new Promise((resolve, reject) => {
+      deleteMessageFromSqs(message, resolve, reject);
+    });
+  }
+
+  function retry() {
+    return new Promise(resolve => resolve());
+  }
+
+  function fail() {
+    // send sns to configured failure/dead letter queue
+    return new Promise(resolve => resolve());
+  }
+
+  const source = {receiveMessage, ignore, success, retry, fail};
   return getReadStream(configuration, source);
 }
 

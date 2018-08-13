@@ -50,14 +50,8 @@ function getSource(configuration) {
     ];
   }
 
-
-  function deleteMessage(message, callback) {
-    let deleteError;
-    const deleteData = `deleteDate:${message.ReceiptHandle}`;
-
-    setTimeout(() => {
-      callback(deleteError, deleteData);
-    }, 500);
+  function wait(milliSeconds) {
+    return new Promise(resolve => setTimeout(resolve, milliSeconds));
   }
 
 
@@ -75,12 +69,30 @@ function getSource(configuration) {
       logger.info("READ message stream empty!");
     }
 
-    setTimeout(() => {
-      callback(err, data);
-    }, 500);
+    wait(500).then(() => callback(err, data));
   }
 
-  const source = {receiveMessage, deleteMessage};
+  function ignore(message) {
+    const deleteData = `ignoreData:${message.ReceiptHandle}`;
+
+    return wait(500).then(() => deleteData);
+  }
+
+  function success(message) {
+    const deleteData = `successData:${message.ReceiptHandle}`;
+
+    return wait(500).then(() => deleteData);
+  }
+
+  function retry() {
+    return new Promise(resolve => resolve);
+  }
+
+  function fail() {
+    return new Promise(resolve => resolve);
+  }
+
+  const source = {receiveMessage, ignore, success, retry, fail};
   return readStream(configuration, source);
 }
 

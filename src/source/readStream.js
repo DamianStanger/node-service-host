@@ -5,20 +5,6 @@ const messageBuilder = require("./messageBuilder");
 
 function getReadStream(configuration, source) {
 
-  function deleteMessage(message, resolve, reject) {
-    source.deleteMessage(message, (err, data) => {
-      if (err) {
-        logger.error(message.correlationId, "Error deleting msg");
-        logger.error(err);
-        reject(err);
-      } else {
-        logger.debug("Message deleted", data);
-        resolve(message);
-      }
-    });
-  }
-
-
   let receiveInProgress = false;
 
   function receiveMessageBatch(readStream) {
@@ -81,26 +67,24 @@ function getReadStream(configuration, source) {
 
   readStream.success = message => {
     logger.debug(message.correlationId, "success");
-    return new Promise((resolve, reject) => {
-      deleteMessage(message, resolve, reject);
-    });
+    return source.success(message);
   };
 
   readStream.retry = (message, error) => {
     logger.error(message.correlationId, "retry");
     logger.error(error);
+    return source.retry(message);
   };
 
   readStream.fail = (message, error) => {
     logger.error(message.correlationId, "fail");
     logger.error(error);
+    return source.fail(message);
   };
 
   readStream.ignore = message => {
     logger.debug(message.correlationId, "ignore");
-    return new Promise((resolve, reject) => {
-      deleteMessage(message, resolve, reject);
-    });
+    return source.ignore(message);
   };
 
   return readStream;
