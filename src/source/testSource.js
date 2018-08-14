@@ -1,6 +1,7 @@
 const logger = require("../logger")("serviceHost.testSource");
 const messageBuilder = require("./messageBuilder");
 const readStream = require("./readStream");
+const wait = require("../utils/wait");
 
 
 function getSource(configuration) {
@@ -50,10 +51,6 @@ function getSource(configuration) {
     ];
   }
 
-  function wait(milliSeconds) {
-    return new Promise(resolve => setTimeout(resolve, milliSeconds));
-  }
-
 
   const messages = getTestMessages();
 
@@ -85,11 +82,11 @@ function getSource(configuration) {
   }
 
   function retry() {
-    return new Promise(resolve => resolve);
+    return Promise.resolve();
   }
 
   function fail() {
-    return new Promise(resolve => resolve);
+    return Promise.resolve();
   }
 
   const source = {receiveMessage, ignore, success, retry, fail};

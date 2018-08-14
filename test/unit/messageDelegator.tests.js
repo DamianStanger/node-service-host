@@ -19,7 +19,7 @@ describe("messageDelegator", () => {
   });
 
   it("should return the handlers promise when a handler is matched", () => {
-    const handlersPromise = new Promise(resolve => resolve(42));
+    const handlersPromise = Promise.resolve(42);
     const mockHandler = sinon.fake.returns(handlersPromise);
     const mockReadStream = {
       "ignore": sinon.fake(),
@@ -78,7 +78,7 @@ describe("messageDelegator", () => {
   });
 
   it("should use the messages version number to run the right handler", () => {
-    const handlersPromise = new Promise(resolve => resolve(25));
+    const handlersPromise = Promise.resolve(25);
     const mockHandler1 = sinon.fake();
     const mockHandler2 = sinon.fake.returns(handlersPromise);
     const mockReadStream = {};
@@ -95,7 +95,7 @@ describe("messageDelegator", () => {
   });
 
   it("should use the undefined version handler if no handler exists for that exact version", () => {
-    const handlersPromise = new Promise(resolve => resolve(69));
+    const handlersPromise = Promise.resolve(69);
     const mockHandler = sinon.fake.returns(handlersPromise);
     const mockReadStream = {};
     const message = messageBuilder().withVersion(4).build();

@@ -1,4 +1,5 @@
 const logger = require("./logger")("serviceHost.throttle");
+const wait = require("./utils/wait");
 
 
 function throttle(readStream, messageDelegator, config) {
@@ -24,22 +25,20 @@ function throttle(readStream, messageDelegator, config) {
     }
 
     if (message.isControlMessage) {
+      readStream.pause();
       if (message.payload.error) {
         logger.error(message.correlationId, message.eventName, message.payload);
-        // TODO incremental backoff when consecutive errors occur
-        setTimeout(checkConcurrency, config.millisecondsToWaitOnError);
-      } else {
-        logger.info(message.correlationId, message.eventName, message.payload);
-        setTimeout(checkConcurrency, config.millisecondsToWaitOnNoMessages);
+        return wait(config.millisecondsToWaitOnError).then(checkConcurrency);
       }
-      readStream.pause();
-      return;
+      logger.info(message.correlationId, message.eventName, message.payload);
+      return wait(config.millisecondsToWaitOnNoMessages).then(checkConcurrency);
     }
 
     messageDelegator(message).then(asyncDone);
     inProgress++;
 
     checkConcurrency();
+    return Promise.resolve();
   }
 
   readStream.on("data", message => {

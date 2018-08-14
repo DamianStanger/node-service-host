@@ -94,6 +94,7 @@ node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js example/**/*.js --fix
 * Send message with failure reason to SNS
 * Ensure all failures are handled
 * Stop the streams when the end is reached (throttle)
+* Incremental backoff when consecutive errors occur
 
 
 ### Future features

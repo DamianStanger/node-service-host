@@ -4,6 +4,7 @@ const {Readable} = require("stream");
 
 const throttle = require("../../src/throttle");
 const messageBuilder = require("../../src/source/messageBuilder");
+const wait = require("../../src/utils/wait");
 
 
 const standardConfig = {
@@ -89,13 +90,10 @@ describe("throttle", () => {
     resolvedMessages[0].should.equal(message1);
     resolvedMessages[1].should.equal(message2);
 
-    return new Promise(resolve => {
-      setTimeout(() => {
-        readStream.isPaused().should.be.false;
-        resolvedMessages.length.should.equal(3);
-        resolvedMessages[2].should.equal(message3);
-        resolve();
-      }, 5);
+    return wait(5).then(() => {
+      readStream.isPaused().should.be.false;
+      resolvedMessages.length.should.equal(3);
+      resolvedMessages[2].should.equal(message3);
     });
   });
 
@@ -114,18 +112,16 @@ describe("throttle", () => {
         readStream.isPaused().should.be.true;
         resolvedMessages.length.should.equal(0);
 
-        return new Promise(resolve => {
-          setTimeout(() => {
-            readStream.isPaused().should.be.true;
-            resolvedMessages.length.should.equal(0);
-          }, 6);
+        // Im using 7 milliseconds to give the timing a little leaway in processing and timing
+        return wait(7).then(() => {
+          readStream.isPaused().should.be.true;
+          resolvedMessages.length.should.equal(0);
 
-          setTimeout(() => {
+          return wait(7).then(() => {
             readStream.isPaused().should.be.false;
             resolvedMessages.length.should.equal(1);
             resolvedMessages[0].should.equal(message);
-            resolve();
-          }, 14);
+          });
         });
       });
     });
@@ -144,18 +140,16 @@ describe("throttle", () => {
         readStream.isPaused().should.be.true;
         resolvedMessages.length.should.equal(0);
 
-        return new Promise(resolve => {
-          setTimeout(() => {
-            readStream.isPaused().should.be.true;
-            resolvedMessages.length.should.equal(0);
-          }, 6);
+        // Im using 7 milliseconds to give the timing a little leaway in processing and timing
+        return wait(7).then(() => {
+          readStream.isPaused().should.be.true;
+          resolvedMessages.length.should.equal(0);
 
-          setTimeout(() => {
+          return wait(7).then(() => {
             readStream.isPaused().should.be.false;
             resolvedMessages.length.should.equal(1);
             resolvedMessages[0].should.equal(message);
-            resolve();
-          }, 14);
+          });
         });
       });
     });

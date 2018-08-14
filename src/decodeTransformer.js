@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const {Transform} = require("stream");
 const logger = require("./logger")("decodeTransformer");
-const base64Decode = require("./base64Decode");
+const base64Decode = require("./utils/base64Decode");
 
 
 function decodeTransformer() {

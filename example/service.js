@@ -1,4 +1,5 @@
 const logger = require("../src/logger")("example.service");
+const wait = require("../src/utils/wait");
 
 
 function orderPlacedHandler(message, success, retry, fail) {
@@ -8,10 +9,6 @@ function orderPlacedHandler(message, success, retry, fail) {
   // callback depending on the outcome of the processing.
   // The following is a fake exmple that will take 2 seconds to process the message
   // and then mark it as success.
-
-  function wait(milliSeconds) {
-    return new Promise(resolve => setTimeout(resolve, milliSeconds));
-  }
 
   return wait(500).then(() => {
     if (message.payload && message.payload.simulateFailure) {

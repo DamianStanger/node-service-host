@@ -183,7 +183,7 @@ describe("readStream", () => {
     it("should call success on the source", () => {
       const message = messageBuilder().build();
       const source = {
-        "success": msg => new Promise(resolve => resolve(msg))
+        "success": msg => Promise.resolve(msg)
       };
       const readStream = getReadStream(defaultConfig, source);
 
@@ -203,7 +203,7 @@ describe("readStream", () => {
     it("should call ignore on the source", () => {
       const message = messageBuilder().build();
       const source = {
-        "ignore": msg => new Promise(resolve => resolve(msg))
+        "ignore": msg => Promise.resolve(msg)
       };
       const readStream = getReadStream(defaultConfig, source);
 
@@ -223,7 +223,7 @@ describe("readStream", () => {
     it("should call retry on the source", () => {
       const message = messageBuilder().build();
       const source = {
-        "retry": msg => new Promise(resolve => resolve(msg))
+        "retry": msg => Promise.resolve(msg)
       };
       const readStream = getReadStream(defaultConfig, source);
 
@@ -244,7 +244,7 @@ describe("readStream", () => {
     it("should call fail on the source", () => {
       const message = messageBuilder().build();
       const source = {
-        "fail": msg => new Promise(resolve => resolve(msg))
+        "fail": msg => Promise.resolve(msg)
       };
       const readStream = getReadStream(defaultConfig, source);
 

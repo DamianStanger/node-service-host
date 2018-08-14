@@ -1,5 +1,5 @@
 const assert = require("assert");
-const logger = require("./logger")("serviceHost");
+const logger = require("../logger")("serviceHost");
 
 
 function base64Decode(encoded, correlationId) {

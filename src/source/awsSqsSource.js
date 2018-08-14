@@ -63,12 +63,12 @@ function getSource(configuration, getReadStream = readStream, sqs = awsSqs) {
   }
 
   function retry() {
-    return new Promise(resolve => resolve());
+    return Promise.resolve();
   }
 
   function fail() {
     // send sns to configured failure/dead letter queue
-    return new Promise(resolve => resolve());
+    return Promise.resolve();
   }
 
   const source = {receiveMessage, ignore, success, retry, fail};
