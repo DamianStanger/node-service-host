@@ -54,9 +54,8 @@ function getSource(configuration) {
 
   const messages = getTestMessages();
 
-  function receiveMessage(callback) {
+  function receiveMessage() {
     const data = {"Messages": []};
-    let err;
 
     const thisMessage = messages.shift();
     if (thisMessage) {
@@ -66,7 +65,7 @@ function getSource(configuration) {
       logger.info("READ message stream empty!");
     }
 
-    wait(500).then(() => callback(err, data));
+    return wait(500).then(() => data);
   }
 
   function ignore(message) {

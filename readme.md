@@ -89,6 +89,19 @@ node_modules/eslint/bin/eslint.js src/**/*.js test/**/*.js example/**/*.js --fix
 ```
 
 
+## Debug
+To debug the app you can run the following (below) which will start the process and
+break on the first line which then allows you to attach your favorite debugger.
+```
+npm run debug
+node --inspect-brk example/server.js
+```
+
+To debug the tests you can run
+```
+
+```
+
 ## Roadmap
 * Catch all handler if no version was defined in the registration
 * Send message with failure reason to SNS

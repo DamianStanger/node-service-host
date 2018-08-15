@@ -13,20 +13,8 @@ function getReadStream(configuration, source) {
     } else {
       logger.debug("set receiveInProgress = true");
       receiveInProgress = true;
-      source.receiveMessage((err, data) => {
-        if (err) {
-
-          // TODO Should this have a back off mechanisum for repeat failures? (maybe in the throttle)
-          receiveInProgress = false;
-          const payload = {
-            "reason": "receiveMessageBatch got an error from the source",
-            "error": err
-          };
-          logger.error(payload.reason, JSON.stringify(payload.error));
-          const controlMessage = messageBuilder().withPayload(payload).buildControlMessage();
-          readStream.push(controlMessage);
-
-        } else if (data && data.Messages && data.Messages.length > 0) {
+      source.receiveMessage().then(data => {
+        if (data && data.Messages && data.Messages.length > 0) {
 
           logger.debug(`receiveMessageBatch got ${data.Messages.length} message(s)`);
           data.Messages.forEach((msg, i) => {
@@ -39,6 +27,7 @@ function getReadStream(configuration, source) {
             readStream.push(message);
             logger.debug(message.correlationId, "pushed");
           });
+          logger.trace(`receiveMessageBatch finished processing all ${data.Messages.length} messages`);
 
         } else {
 
@@ -51,6 +40,17 @@ function getReadStream(configuration, source) {
           readStream.push(controlMessage);
 
         }
+      }).catch(err => {
+        // TODO Should this have a back off mechanisum for repeat failures? (maybe in the throttle)
+        receiveInProgress = false;
+        const payload = {
+          "reason": "receiveMessageBatch got an error from the source",
+          "error": err
+        };
+        logger.error(payload.reason);
+        logger.error(err);
+        const controlMessage = messageBuilder().withPayload(payload).buildControlMessage();
+        readStream.push(controlMessage);
       });
     }
   }

@@ -16,27 +16,25 @@ describe("awsSqsSource", () => {
 
   let actualDeleteMessageParams;
   let actualReceiveMessageParams;
-  let actualReceiveMessageCallback;
 
   const fakeAwsSqs = {
-    "deleteMessage": (params, callback) => {
+    "deleteMessage": params => {
       actualDeleteMessageParams = params;
-      const error = null;
       const data = {"name": "fakeAwsSqs_deleteMessage_data"};
-      callback(error, data);
+      return {"promise": () => Promise.resolve(data)};
     },
-    "receiveMessage": (params, callback) => {
+    "receiveMessage": params => {
       actualReceiveMessageParams = params;
-      actualReceiveMessageCallback = callback;
+      const data = {"name": "fakeAwsSqs_receiveMessage_data"};
+      return {"promise": () => Promise.resolve(data)};
     }
   };
 
   const fakeAwsSqsWithErrors = {
-    "deleteMessage": (params, callback) => {
+    "deleteMessage": params => {
       actualDeleteMessageParams = params;
       const error = new Error("fakeAwsSqsWithErrors_deleteMessage_error");
-      const data = {"name": "fakeAwsSqsWithErrors_deleteMessage_data"};
-      callback(error, data);
+      return {"promise": () => Promise.reject(error)};
     }
   };
 
@@ -52,7 +50,6 @@ describe("awsSqsSource", () => {
   beforeEach(() => {
     actualDeleteMessageParams = null;
     actualReceiveMessageParams = null;
-    actualReceiveMessageCallback = null;
     actualSource = null;
     actualConfig = null;
   });
@@ -74,22 +71,21 @@ describe("awsSqsSource", () => {
 
     describe("receiveMessage", () => {
       it("Should call receiveMessage on the source", () => {
-        const fakeCallback = {"name": "myFakeCallback-receiveMessage"};
         getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqs);
 
-        actualSource.receiveMessage(fakeCallback);
-
-        actualReceiveMessageCallback.should.equal(fakeCallback);
-        actualReceiveMessageParams.should.deep.equal({
-          "AttributeNames": [
-            "All"
-          ],
-          "MaxNumberOfMessages": 1111,
-          "MessageAttributeNames": [
-            "All"
-          ],
-          "QueueUrl": "myQueueUrlFromConfig",
-          "WaitTimeSeconds": 2222
+        return actualSource.receiveMessage().then(data => {
+          actualReceiveMessageParams.should.deep.equal({
+            "AttributeNames": [
+              "All"
+            ],
+            "MaxNumberOfMessages": 1111,
+            "MessageAttributeNames": [
+              "All"
+            ],
+            "QueueUrl": "myQueueUrlFromConfig",
+            "WaitTimeSeconds": 2222
+          });
+          data.name.should.equal("fakeAwsSqs_receiveMessage_data");
         });
       });
     });
@@ -114,7 +110,7 @@ describe("awsSqsSource", () => {
 
         return actualSource.success(message)
           .then(() => fail("should throw error"))
-          .catch(err => err.message.should.equal("fakeAwsSqsWithErrors_deleteMessage_error"));
+          .catch(err => err.message.should.equal("Error: fakeAwsSqsWithErrors_deleteMessage_error"));
       });
     });
   });
@@ -139,7 +135,7 @@ describe("awsSqsSource", () => {
 
       return actualSource.ignore(message)
         .then(() => fail("should throw error"))
-        .catch(err => err.message.should.equal("fakeAwsSqsWithErrors_deleteMessage_error"));
+        .catch(err => err.message.should.equal("Error: fakeAwsSqsWithErrors_deleteMessage_error"));
     });
   });
 

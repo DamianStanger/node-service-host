@@ -8,7 +8,6 @@ const awsSqs = new AWS.SQS({"apiVersion": "2012-11-05"});
 
 
 function getSource(configuration, getReadStream = readStream, sqs = awsSqs) {
-
   const awsParams = {
     "AttributeNames": [
       "All"
@@ -25,7 +24,7 @@ function getSource(configuration, getReadStream = readStream, sqs = awsSqs) {
   logger.debug("getSource", configuration, awsParams);
 
 
-  function deleteMessageFromSqs(message, resolve, reject) {
+  function deleteMessageFromSqs(message) {
     const deleteParams = {
       "QueueUrl": configuration.queueUrl,
       "ReceiptHandle": message.ReceiptHandle
@@ -33,33 +32,27 @@ function getSource(configuration, getReadStream = readStream, sqs = awsSqs) {
 
     logger.trace("deleteParams:", deleteParams);
 
-    sqs.deleteMessage(deleteParams, (err, data) => {
-      if (err) {
-        logger.error(message.correlationId, "Error deleting msg");
-        logger.error(err);
-        reject(err);
-      } else {
-        logger.debug("Message deleted", data);
-        resolve(data);
-      }
+    return sqs.deleteMessage(deleteParams).promise().then(data => {
+      logger.debug("Message deleted", data);
+      return data;
+    }).catch(err => {
+      logger.error(message.correlationId, "Error deleting msg");
+      logger.error(err);
+      throw new Error(err);
     });
   }
 
 
-  function receiveMessage(callback) {
-    sqs.receiveMessage(awsParams, callback);
+  function receiveMessage() {
+    return sqs.receiveMessage(awsParams).promise();
   }
 
   function ignore(message) {
-    return new Promise((resolve, reject) => {
-      deleteMessageFromSqs(message, resolve, reject);
-    });
+    return deleteMessageFromSqs(message);
   }
 
   function success(message) {
-    return new Promise((resolve, reject) => {
-      deleteMessageFromSqs(message, resolve, reject);
-    });
+    return deleteMessageFromSqs(message);
   }
 
   function retry() {
