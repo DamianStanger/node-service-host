@@ -93,7 +93,7 @@ describe("configuration", () => {
       config.queueUrl.should.equal("MyFakeUrl");
     });
     it("source", () => {
-      process.env.serviceHostSource = "testSource";
+      process.env.serviceHostSource = "test";
       const config = getConfiguration();
       assertSourceIsValid(config.source);
     });
@@ -126,7 +126,7 @@ describe("configuration", () => {
       config.queueUrl.should.equal("MyFakeUrlFromConfig");
     });
     it("source", () => {
-      const config = getConfiguration({"source": "testSource"});
+      const config = getConfiguration({"source": "test"});
       assertSourceIsValid(config.source);
     });
     it("waitTimeSecondsWhilstReading", () => {

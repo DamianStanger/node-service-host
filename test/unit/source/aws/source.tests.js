@@ -2,10 +2,10 @@ const fail = require("chai").fail;
 const chai = require("chai");
 chai.should();
 
-const getAwsSqsSource = require("../../../src/source/awsSqsSource");
+const getAwsSqsSource = require("../../../../src/source/aws/source");
 
 
-describe("awsSqsSource", () => {
+describe("aws.source", () => {
 
   const fakeReadStream = {"name": "myfakeReadStream"};
   const configuration = {

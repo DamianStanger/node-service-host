@@ -1,6 +1,6 @@
 const AWS = require("aws-sdk");
-const logger = require("../logger")("serviceHost.awsSqsSource");
-const readStream = require("./readStream");
+const logger = require("../../logger")("serviceHost.source.aws.source");
+const readStream = require("../readStream");
 
 
 AWS.config.update({"region": "eu-west-1"});

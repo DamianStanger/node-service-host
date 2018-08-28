@@ -6,6 +6,7 @@ const logger = require("./logger")("serviceHost.configuration");
 function getConfiguration(config = {}) {
 
   const queueUrl = config.queueUrl || process.env.serviceHostQueueUrl || "";
+  const errorSNS = config.errorSNS || process.env.serviceHostErrorSNS || "";
   const maxNumberOfMessagesToReadInBatch = config.maxNumberOfMessagesToReadInBatch || process.env.serviceHostMaxNumberOfMessagesToReadInBatch || 10;
   const maxProcessingConcurrency = config.maxProcessingConcurrency || process.env.serviceHostMaxProcessingConcurrency || 1;
   const millisecondsToWaitOnNoMessages = config.millisecondsToWaitOnNoMessages || process.env.serviceHostMillisecondsToWaitOnNoMessages || 10000;
@@ -26,8 +27,8 @@ function getConfiguration(config = {}) {
       return config.source;
     }
 
-    let sourceFileName = config.source || process.env.serviceHostSource || "testSource";
-    sourceFileName = path.join(process.cwd(), "src", "source", sourceFileName);
+    let sourceFileName = config.source || process.env.serviceHostSource || "test";
+    sourceFileName = path.join(process.cwd(), "src", "source", sourceFileName, "source");
     return require(sourceFileName)(configuration);
   }
 

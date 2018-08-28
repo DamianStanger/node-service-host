@@ -9,7 +9,7 @@ If the message does not conform to the correct shape it will be sent as is to th
 
 ## Usage
 
-An example usage is given in the Example folder which uses the testSource to get its messages. The host works best when passed
+An example usage is given in the Example folder which uses the test source to get its messages. The host works best when passed
 messages in the following format although will work with any message format. its just that the routing will be ignored.
 
 ```json
@@ -34,12 +34,13 @@ and an azure source would need to delete messages from azure. The source knows h
 export serviceHostLoggerLevel=info                    # [silent] fatal error warn info debug trace
 export serviceHostLoggerName=myApp                    # [undefined]
 export serviceHostMaxProcessingConcurrency=2          # [1]
-export serviceHostSource=testSource                   # [awsSqsSource]
+export serviceHostSource=test                         # [aws]
 export serviceHostMaxNumberOfMessagesToReadInBatch=5  # [10]
 export serviceHostMillisecondsToWaitOnError=1000      # [10000] // 10 seconds by default
 export serviceHostMillisecondsToWaitOnNoMessages=1000 # [10000] // 10 seconds by default
 export serviceHostWaitTimeSecondsWhilstReading=0      # [20]    // long polling by default
 export serviceHostQueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName
+export serviceHostErrorSNS=arn:aws:sns:eu-west-1:123456789012:mySNSName
 
 export AWS_SECRET_ACCESS_KEY=AAAAAAABBBBBBB
 export AWS_ACCESS_KEY_ID=CCCCCCCDDDDDDD
@@ -50,10 +51,10 @@ It is possible to pass the serviceHost... config into the serviceHost when it is
 
 
 ## Example
-To run a simulated full stack test with a fixed set of messages from a testSource run:
+To run a simulated full stack test with a fixed set of messages from a test source run:
 ```
 export serviceHostLoggerLevel=trace                 # [silent] fatal error warn info debug trace
-export serviceHostSource=testSource
+export serviceHostSource=test
 
 npm start                                           # Run the example server with pretty printed logs
 node example/server.js                              # Get the raw logs to the console
@@ -61,8 +62,8 @@ node example/server.js | node_modules/pino/bin.js   # Will pretty print the pino
 ```
 This will send a number of messages into the serviceHost with a simulated 2 second piece of work inside the handler.
 
-To run the example service plugged into the real awsSqsSource just run ```npm start``` with no env config. The
-default source is the awsSqsSource.
+To run the example service plugged into the real AWS SQS source just run ```npm start``` with no env config. The
+default source is the AWS SQS source.
 
 
 ## Tests

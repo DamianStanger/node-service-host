@@ -39,7 +39,7 @@ function requireAllTheThings(dirName, exclude) {
 
 describe("Load all source files for code coverage reports", () => {
   it("require", done => {
-    const exclude = "../src/source/testSource.js";
+    const exclude = "../src/source/test/source.js";
     requireAllTheThings("./src", exclude);
     done();
   });

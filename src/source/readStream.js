@@ -1,5 +1,5 @@
 const Readable = require("stream").Readable;
-const logger = require("../logger")("serviceHost.readStream");
+const logger = require("../logger")("serviceHost.source.readStream");
 const messageBuilder = require("./messageBuilder");
 
 
