@@ -15,6 +15,7 @@ function getConfiguration(config = {}) {
 
   const configuration = {
     "queueUrl": queueUrl,
+    "errorSNS": errorSNS,
     "maxNumberOfMessagesToReadInBatch": parseInt(maxNumberOfMessagesToReadInBatch, 10),
     "maxProcessingConcurrency": parseInt(maxProcessingConcurrency, 10),
     "millisecondsToWaitOnNoMessages": parseInt(millisecondsToWaitOnNoMessages, 10),

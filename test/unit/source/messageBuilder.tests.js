@@ -6,6 +6,23 @@ const messageBuilder = require("../../../src/source/messageBuilder");
 
 
 describe("messageBuilder", () => {
+  it("should build a failure message based upon a copy of the original message and error", () => {
+    const originalMessage = {"foo": {"bar": 1}};
+    const error = new Error("FOOBAR");
+
+    const failureMessage = messageBuilder().buildFailureMessage(error, originalMessage);
+
+    failureMessage.foo.should.deep.equal(originalMessage.foo);
+    failureMessage.error.message.should.equal(error.message);
+    failureMessage.error.stack.should.equal(error.stack);
+
+    originalMessage.foo.bar = 2;
+    error.message = "shouldNotChange";
+
+    failureMessage.foo.bar.should.equal(1);
+    failureMessage.error.message.should.equal("FOOBAR");
+  });
+
   it("should build a default message", () => {
     const message = messageBuilder().build();
 

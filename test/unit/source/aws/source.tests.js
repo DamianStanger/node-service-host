@@ -1,3 +1,4 @@
+/* eslint-disable no-undefined */
 const fail = require("chai").fail;
 const chai = require("chai");
 chai.should();
@@ -35,6 +36,23 @@ describe("aws.source", () => {
       actualDeleteMessageParams = params;
       const error = new Error("fakeAwsSqsWithErrors_deleteMessage_error");
       return {"promise": () => Promise.reject(error)};
+    }
+  };
+
+  let actualSnsProxyFailureMessage;
+
+  const fakeSnsProxy = {
+    "publish": params => {
+      actualSnsProxyFailureMessage = params;
+      const data = {"name": "fakeSnsProxy_publish_data"};
+      return Promise.resolve(data);
+    }
+  };
+  const fakeSnsProxyWithErrors = {
+    "publish": params => {
+      actualSnsProxyFailureMessage = params;
+      const error = new Error("fakeSnsProxyWithErrors_publish_data");
+      return Promise.reject(error);
     }
   };
 
@@ -151,13 +169,49 @@ describe("aws.source", () => {
   });
 
   describe("fail", () => {
-    it("Should do nothing", () => {
+    it("Should publish sns failure message", () => {
+      const error = new Error("itFailed!!");
       const message = {"ReceiptHandle": "myReceiptHandleFromMessage"};
-      getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqs);
+      getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqs, fakeSnsProxy);
 
-      return actualSource.fail(message).then(() => {});
+      return actualSource.fail(error, message).then(() => {
+        message.error = {
+          "message": error.message,
+          "stack": error.stack
+        };
+        actualSnsProxyFailureMessage.should.deep.equal(message);
+      });
+    });
 
-      // TODO Assert some things
+    it("should delete the original message once failure message is sent", () => {
+      const error = new Error("itFailed!!");
+      const message = {"ReceiptHandle": "myReceiptHandleFromMessage"};
+      getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqs, fakeSnsProxy);
+
+      return actualSource.fail(error, message).then(data => {
+        actualDeleteMessageParams.should.deep.equal({
+          "QueueUrl": "myQueueUrlFromConfig",
+          "ReceiptHandle": "myReceiptHandleFromMessage"
+        });
+        data.name.should.equal("fakeAwsSqs_deleteMessage_data");
+      });
+    });
+
+    describe("if publishing sns failure message throws an error", () => {
+      it("should not delete the original message", () => {
+        const error = new Error("itFailed!!");
+        const message = {"ReceiptHandle": "myReceiptHandleFromMessage"};
+        getAwsSqsSource(configuration, fakeGetReadStream, fakeAwsSqs, fakeSnsProxyWithErrors);
+
+        actualDeleteMessageParams = undefined;
+
+        return actualSource.fail(error, message)
+          .then(() => fail("should throw error"))
+          .catch(err => {
+            err.message.should.equal("fakeSnsProxyWithErrors_publish_data");
+            chai.expect(actualDeleteMessageParams).to.be.undefined;
+          });
+      });
     });
   });
 });

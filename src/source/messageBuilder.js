@@ -55,6 +55,12 @@ function messageBuilder() {
         payload = {};
       }
       return buildMessage();
+    },
+
+    "buildFailureMessage"(error, originalMessage) {
+      const failureMessage = JSON.parse(JSON.stringify(originalMessage));
+      failureMessage.error = JSON.parse(JSON.stringify(error, Reflect.ownKeys(error)));
+      return failureMessage;
     }
   };
 }

@@ -1,13 +1,15 @@
 const AWS = require("aws-sdk");
 const logger = require("../../logger")("serviceHost.source.aws.source");
 const readStream = require("../readStream");
+const messageBuilder = require("../messageBuilder");
+const getSnsProxy = require("./snsProxy");
 
 
 AWS.config.update({"region": "eu-west-1"});
 const awsSqs = new AWS.SQS({"apiVersion": "2012-11-05"});
 
 
-function getSource(configuration, getReadStream = readStream, sqs = awsSqs) {
+function getSource(configuration, getReadStream = readStream, sqs = awsSqs, failureSnsProxy) {
   const awsParams = {
     "AttributeNames": [
       "All"
@@ -22,6 +24,8 @@ function getSource(configuration, getReadStream = readStream, sqs = awsSqs) {
   };
 
   logger.debug("getSource", configuration, awsParams);
+
+  const failureSns = failureSnsProxy || getSnsProxy(configuration);
 
 
   function deleteMessageFromSqs(message) {
@@ -59,9 +63,9 @@ function getSource(configuration, getReadStream = readStream, sqs = awsSqs) {
     return Promise.resolve();
   }
 
-  function fail() {
-    // send sns to configured failure/dead letter queue
-    return Promise.resolve();
+  function fail(error, message) {
+    const failureMessage = messageBuilder().buildFailureMessage(error, message);
+    return failureSns.publish(failureMessage).then(() => deleteMessageFromSqs(message));
   }
 
   const source = {receiveMessage, ignore, success, retry, fail};

@@ -109,6 +109,7 @@ To debug the tests you can run
 * Ensure all failures are handled
 * Stop the streams when the end is reached (throttle)
 * Incremental backoff when consecutive errors occur
+* Logging of the system resources
 
 
 ### Future features
