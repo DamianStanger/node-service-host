@@ -23,6 +23,7 @@ describe("configuration", () => {
     Reflect.deleteProperty(process.env, "serviceHostQueueUrl");
     Reflect.deleteProperty(process.env, "serviceHostSource");
     Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
+    Reflect.deleteProperty(process.env, "serviceHostHealthCheckFrequency");
   });
 
   afterEach(() => {
@@ -33,6 +34,7 @@ describe("configuration", () => {
     Reflect.deleteProperty(process.env, "serviceHostQueueUrl");
     Reflect.deleteProperty(process.env, "serviceHostSource");
     Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
+    Reflect.deleteProperty(process.env, "serviceHostHealthCheckFrequency");
   });
 
   describe("getConfiguration returns default", () => {
@@ -63,6 +65,10 @@ describe("configuration", () => {
     it("waitTimeSecondsWhilstReading", () => {
       const config = getConfiguration();
       config.waitTimeSecondsWhilstReading.should.equal(20);
+    });
+    it("HealthCheckFrequency", () => {
+      const config = getConfiguration();
+      config.HealthCheckFrequency.should.equal(30000);
     });
   });
 
@@ -102,6 +108,11 @@ describe("configuration", () => {
       const config = getConfiguration();
       config.waitTimeSecondsWhilstReading.should.equal(44);
     });
+    it("HealthCheckFrequency", () => {
+      process.env.serviceHostHealthCheckFrequency = 55;
+      const config = getConfiguration();
+      config.HealthCheckFrequency.should.equal(55);
+    });
   });
 
   describe("getConfiguration returns values from passed config", () => {
@@ -132,6 +143,10 @@ describe("configuration", () => {
     it("waitTimeSecondsWhilstReading", () => {
       const config = getConfiguration({"waitTimeSecondsWhilstReading": 555});
       config.waitTimeSecondsWhilstReading.should.equal(555);
+    });
+    it("HealthCheckFrequency", () => {
+      const config = getConfiguration({"HealthCheckFrequency": 666});
+      config.HealthCheckFrequency.should.equal(666);
     });
   });
 });

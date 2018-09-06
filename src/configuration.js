@@ -12,6 +12,7 @@ function getConfiguration(config = {}) {
   const millisecondsToWaitOnNoMessages = config.millisecondsToWaitOnNoMessages || process.env.serviceHostMillisecondsToWaitOnNoMessages || 10000;
   const millisecondsToWaitOnError = config.millisecondsToWaitOnError || process.env.serviceHostMillisecondsToWaitOnError || 10000;
   const waitTimeSecondsWhilstReading = config.waitTimeSecondsWhilstReading || process.env.serviceHostWaitTimeSecondsWhilstReading || 20;
+  const HealthCheckFrequency = config.HealthCheckFrequency || process.env.serviceHostHealthCheckFrequency || 30000;
 
   const configuration = {
     "queueUrl": queueUrl,
@@ -20,7 +21,8 @@ function getConfiguration(config = {}) {
     "maxProcessingConcurrency": parseInt(maxProcessingConcurrency, 10),
     "millisecondsToWaitOnNoMessages": parseInt(millisecondsToWaitOnNoMessages, 10),
     "millisecondsToWaitOnError": parseInt(millisecondsToWaitOnError, 10),
-    "waitTimeSecondsWhilstReading": parseInt(waitTimeSecondsWhilstReading, 10)
+    "waitTimeSecondsWhilstReading": parseInt(waitTimeSecondsWhilstReading, 10),
+    "HealthCheckFrequency": parseInt(HealthCheckFrequency, 10)
   };
 
   function getSource() {
