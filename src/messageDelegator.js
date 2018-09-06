@@ -48,7 +48,7 @@ function messageDelegator(readStream) {
     return versionHandler(message, readStream.success, readStream.retry, readStream.fail).catch(err => {
       logger.error(`${message.correlationId} - Caught error ${err}`);
       logger.error(err);
-      return readStream.fail(message, err);
+      return readStream.retry(message);
     });
   }
 

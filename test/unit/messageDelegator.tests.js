@@ -38,13 +38,13 @@ describe("messageDelegator", () => {
     });
   });
 
-  it("should call fail when the handlers promise is rejected", () => {
+  it("should call retry when the handlers promise is rejected", () => {
     const theError = new Error(42);
     const handlersPromise = new Promise((resolve, reject) => reject(theError));
     const mockHandler = sinon.fake.returns(handlersPromise);
     const mockReadStream = {
       "ignore": sinon.fake(),
-      "fail": sinon.fake.returns(43)
+      "retry": sinon.fake.returns(43)
     };
     const message = messageBuilder().build();
 
@@ -54,8 +54,8 @@ describe("messageDelegator", () => {
 
     return actual.then(result => {
       mockReadStream.ignore.called.should.be.false;
-      mockReadStream.fail.calledOnce.should.be.true;
-      mockReadStream.fail.calledWith(message, theError).should.be.true;
+      mockReadStream.retry.calledOnce.should.be.true;
+      mockReadStream.retry.calledWith(message).should.be.true;
       result.should.equal(43);
     });
   });
