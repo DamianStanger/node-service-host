@@ -32,7 +32,7 @@ describe("aws.snsProxy", () => {
   describe("publish", () => {
 
     const originalMessage = messageBuilder().build();
-    const error = new Error("Some failure occured");
+    const error = new Error("Some failure occurred");
     const failureMessage = messageBuilder().buildFailureMessage(error, originalMessage);
     const expectedPublishParams = {
       "Message": JSON.stringify(failureMessage),
@@ -41,18 +41,18 @@ describe("aws.snsProxy", () => {
     };
 
     it("Should call publish on sns", () => {
-      const snsProxy = getAwsSnsProxy(configuration, fakeAwsSns);
+      const snsProxy = getAwsSnsProxy(configuration.errorSNS, fakeAwsSns);
 
-      return snsProxy.publish(failureMessage).then(data => {
+      return snsProxy.publish(failureMessage, "Some subject").then(data => {
         actualPublishMessageParams.should.deep.equal(expectedPublishParams);
         data.name.should.equal("fakeAwsSns_publish_data");
       });
     });
 
     it("Should reject the promise on error", () => {
-      const snsProxy = getAwsSnsProxy(configuration, fakeAwsSnsWithErrors);
+      const snsProxy = getAwsSnsProxy(configuration.errorSNS, fakeAwsSnsWithErrors);
 
-      return snsProxy.publish(failureMessage)
+      return snsProxy.publish(failureMessage, "Some subject")
         .then(() => fail("should throw error"))
         .catch(err => {
           actualPublishMessageParams.should.deep.equal(expectedPublishParams);

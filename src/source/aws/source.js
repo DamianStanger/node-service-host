@@ -25,7 +25,7 @@ function getSource(configuration, getReadStream = readStream, sqs = awsSqs, fail
 
   logger.debug("getSource", configuration, awsParams);
 
-  const failureSns = failureSnsProxy || getSnsProxy(configuration);
+  const failureSns = failureSnsProxy || getSnsProxy(configuration.errorSNS);
 
 
   function deleteMessageFromSqs(message) {
@@ -65,7 +65,8 @@ function getSource(configuration, getReadStream = readStream, sqs = awsSqs, fail
 
   function fail(error, message) {
     const failureMessage = messageBuilder().buildFailureMessage(error, message);
-    return failureSns.publish(failureMessage).then(() => deleteMessageFromSqs(message));
+    const subject = `Fail message '${message.eventName}:${message.correlationId}'`;
+    return failureSns.publish(failureMessage, subject).then(() => deleteMessageFromSqs(message));
   }
 
   const source = {receiveMessage, ignore, success, retry, fail};
