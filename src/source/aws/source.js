@@ -25,7 +25,7 @@ function getSource(configuration, getReadStream = readStream, sqs = awsSqs, fail
 
   logger.debug("getSource", configuration, awsParams);
 
-  const failureSns = failureSnsProxy || getSnsProxy(configuration.errorSNS);
+  const failureSns = failureSnsProxy || getSnsProxy(configuration.errorArn);
 
 
   function deleteMessageFromSqs(message) {

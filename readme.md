@@ -40,7 +40,7 @@ export serviceHostMillisecondsToWaitOnError=1000      # [10000] // 10 seconds by
 export serviceHostMillisecondsToWaitOnNoMessages=1000 # [10000] // 10 seconds by default
 export serviceHostWaitTimeSecondsWhilstReading=0      # [20]    // long polling by default
 export serviceHostQueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName
-export serviceHostErrorSNS=arn:aws:sns:eu-west-1:123456789012:mySNSName
+export serviceHostErrorArn=arn:aws:sns:eu-west-1:123456789012:mySNSName
 
 export AWS_SECRET_ACCESS_KEY=AAAAAAABBBBBBB
 export AWS_ACCESS_KEY_ID=CCCCCCCDDDDDDD
@@ -105,7 +105,6 @@ To debug the tests you can run
 
 ## Roadmap
 * Catch all handler if no version was defined in the registration
-* Send message with failure reason to SNS
 * Ensure all failures are handled
 * Stop the streams when the end is reached (throttle)
 * Incremental backoff when consecutive errors occur

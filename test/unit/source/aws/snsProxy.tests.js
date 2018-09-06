@@ -9,7 +9,7 @@ const getAwsSnsProxy = require("../../../../src/source/aws/snsProxy");
 describe("aws.snsProxy", () => {
 
   const configuration = {
-    "errorSNS": "arn:aws:sns:us-west-2:12345678890:endpoint/ABC/DEF/GHI"
+    "errorArn": "arn:aws:sns:us-west-2:12345678890:endpoint/ABC/DEF/GHI"
   };
 
   let actualPublishMessageParams;
@@ -41,7 +41,7 @@ describe("aws.snsProxy", () => {
     };
 
     it("Should call publish on sns", () => {
-      const snsProxy = getAwsSnsProxy(configuration.errorSNS, fakeAwsSns);
+      const snsProxy = getAwsSnsProxy(configuration.errorArn, fakeAwsSns);
 
       return snsProxy.publish(failureMessage, "Some subject").then(data => {
         actualPublishMessageParams.should.deep.equal(expectedPublishParams);
@@ -50,7 +50,7 @@ describe("aws.snsProxy", () => {
     });
 
     it("Should reject the promise on error", () => {
-      const snsProxy = getAwsSnsProxy(configuration.errorSNS, fakeAwsSnsWithErrors);
+      const snsProxy = getAwsSnsProxy(configuration.errorArn, fakeAwsSnsWithErrors);
 
       return snsProxy.publish(failureMessage, "Some subject")
         .then(() => fail("should throw error"))
