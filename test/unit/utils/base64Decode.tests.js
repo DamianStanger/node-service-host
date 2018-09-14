@@ -1,7 +1,8 @@
 const AssertionError = require("assert");
 const chai = require("chai");
 chai.should();
-const base64Decode = require("../../src/utils/base64Decode");
+
+const base64Decode = require("../../../src/utils/base64Decode");
 
 
 describe("base64Decode", () => {

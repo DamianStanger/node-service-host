@@ -33,7 +33,7 @@ function getReadStream(configuration, source) {
 
           receiveInProgress = false;
           const payload = {
-            "reason": "receiveMessageBatch got no results from aws, sorry!"
+            "reason": "receiveMessageBatch got no results from the source, sorry!"
           };
           logger.debug(payload.reason);
           const controlMessage = messageBuilder().withPayload(payload).buildControlMessage();

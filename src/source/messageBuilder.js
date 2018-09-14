@@ -1,6 +1,6 @@
 const uuid = require("uuid/v4");
 
-const controlMessageEventName = "serviceHost.controlMessage";
+const controlMessageEventName = "serviceHost.messages.flowControl";
 
 
 function messageBuilder() {

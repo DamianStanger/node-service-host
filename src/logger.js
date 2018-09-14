@@ -2,11 +2,9 @@
 const pino = require("pino");
 
 
-function logger(instanceName, instanceLevel) {
+function logger(name, instanceLevel) {
 
-  const name = instanceName || process.env.serviceHostLoggerName;
   const level = instanceLevel || process.env.serviceHostLoggerLevel || "silent";
-
   const pinoLogger = pino({name, level});
 
   return {

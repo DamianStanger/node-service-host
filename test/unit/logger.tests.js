@@ -70,18 +70,10 @@ describe("logger", () => {
     });
 
     it("name should default to undefined", () => {
-      Reflect.deleteProperty(process.env, "serviceHostLoggerName");
       const loggerUnderTest = logger();
       loggerUnderTest.fatal("calling fatal");
       const name = JSON.parse(process.stdout.write.getCall(0).args[0]).name;
       chai.expect(name).to.be.undefined;
-    });
-
-    it("name should come from environment variable serviceHostLoggerName", () => {
-      process.env.serviceHostLoggerName = "foobar";
-      const loggerUnderTest = logger();
-      loggerUnderTest.info("a info message");
-      JSON.parse(process.stdout.write.getCall(0).args[0]).name.should.equal("foobar");
     });
 
     it("name should come from the passed in config", () => {

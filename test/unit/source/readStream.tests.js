@@ -24,7 +24,7 @@ describe("readStream", () => {
       const readStream = getReadStream(defaultConfig, source);
 
       const expectedControlMessage = messageBuilder()
-        .withPayload({"reason": "receiveMessageBatch got no results from aws, sorry!"})
+        .withPayload({"reason": "receiveMessageBatch got no results from the source, sorry!"})
         .buildControlMessage();
 
       const dataPromise = new Promise(resolve => {

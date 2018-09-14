@@ -31,15 +31,14 @@ and an azure source would need to delete messages from azure. The source knows h
 
 ## Config - Defaults defined in the brackets []
 ```
-export serviceHostLoggerLevel=info                    # [silent] fatal error warn info debug trace
-export serviceHostLoggerName=myApp                    # [undefined]
-export serviceHostMaxProcessingConcurrency=2          # [1]
-export serviceHostSource=test                         # [aws]
-export serviceHostMaxNumberOfMessagesToReadInBatch=5  # [10]
-export serviceHostMillisecondsToWaitOnError=1000      # [10000] // 10 seconds by default
-export serviceHostMillisecondsToWaitOnNoMessages=1000 # [10000] // 10 seconds by default
-export serviceHostWaitTimeSecondsWhilstReading=0      # [20]    // long polling by default
-export serviceHostHealthCheckFrequency=10000          # [30000] // 30 seconds by default
+export serviceHostLoggerLevel=info                      # [silent] fatal error warn info debug trace
+export serviceHostMaxProcessingConcurrency=2            # [1]
+export serviceHostSource=test                           # [aws]
+export serviceHostMaxNumberOfMessagesToReadInBatch=5    # [10]
+export serviceHostMillisecondsToWaitOnError=1000        # [10000]          // 10 seconds by default
+export serviceHostMillisecondsToWaitOnNoMessages=1000   # [10000]          // 10 seconds by default
+export serviceHostWaitTimeSecondsWhilstReading=0        # [20]             // long polling by default
+export serviceHostheartbeatCronExpression="* * * * * *" # [*/30 * * * * *] // 30 seconds by default
 export serviceHostQueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName
 export serviceHostErrorArn=arn:aws:sns:eu-west-1:123456789012:mySNSName
 

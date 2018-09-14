@@ -38,7 +38,7 @@ describe("messageBuilder", () => {
 
     message.attributes.should.deep.equal({});
     message.correlationId.should.equal("00000000-0000-0000-0000-000000000000");
-    message.eventName.should.equal("serviceHost.controlMessage");
+    message.eventName.should.equal("serviceHost.messages.flowControl");
     message.payload.should.deep.equal({});
     expect(message.version).to.be.undefined;
   });
@@ -70,7 +70,7 @@ describe("messageBuilder", () => {
 
     message.attributes.should.equal("ATTRIBUTE");
     message.correlationId.should.equal("00000000-0000-0000-0000-000000000000");
-    message.eventName.should.equal("serviceHost.controlMessage");
+    message.eventName.should.equal("serviceHost.messages.flowControl");
     message.payload.should.equal("PAY");
     message.version.should.equal("VERSION");
   });

@@ -36,6 +36,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.274.1",
+    "cron": "^1.4.1",
     "lodash": "^4.17.10",
     "pino": "^4.17.3"
   },

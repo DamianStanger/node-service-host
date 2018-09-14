@@ -11,10 +11,12 @@ describe("The example service", () => {
 
   let config;
   let dummySourcePromise;
+  let dummyHeartbeatPromise;
 
   beforeEach(() => {
     config = {
-      "maxProcessingConcurrency": 1
+      "maxProcessingConcurrency": 1,
+      "heartbeat": {}
     };
 
     dummySourcePromise = new Promise(resolve => {
@@ -41,6 +43,32 @@ describe("The example service", () => {
 
       config.source = dummySource;
     });
+
+    dummyHeartbeatPromise = new Promise(resolve => {
+      const dummyHeartbeatSource = new Readable({
+        "objectMode": true,
+        "highWaterMark": 1,
+        "read": () => {}
+      });
+      dummyHeartbeatSource.success = msg => {
+        resolve(`success-${msg.eventName}-${msg.version}`);
+        return dummyHeartbeatPromise;
+      };
+      dummyHeartbeatSource.retry = (msg, err) => {
+        resolve(`retry-${err}`);
+        return dummyHeartbeatPromise;
+      };
+      dummyHeartbeatSource.fail = (msg, err) => {
+        resolve(`fail-${err}`);
+        return dummyHeartbeatPromise;
+      };
+      dummyHeartbeatSource.ignore = msg => {
+        resolve(`ignore-${msg.eventName}-${msg.version}`);
+        return dummyHeartbeatPromise;
+      };
+
+      config.heartbeat.source = dummyHeartbeatSource;
+    });
   });
 
 
@@ -54,6 +82,7 @@ describe("The example service", () => {
     registerEvents(serviceHost, config);
     config.source.push(message);
     config.source.push(null);
+    config.heartbeat.source.push(null);
     serviceHost.start();
 
     dummySourcePromise.then(result => {
