@@ -109,6 +109,11 @@ To debug the tests you can run
 * Incremental backoff when consecutive errors occur
 * Logging of the system resources
 
+## Outstanding tasks
+* Finish healthcheck, send to sns
+* Add demo for use of the cron source
+* Move controlflow message creation to new builder
+
 
 ### Future features
 #### Cron job source
