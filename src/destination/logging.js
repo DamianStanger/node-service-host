@@ -3,7 +3,9 @@
 
 function getLoggingDestination() {
   const loggingDestination = {
-    "execute": () => {}
+    "execute"() {
+      return Promise.resolve(() => {});
+    }
   };
   return loggingDestination;
 }

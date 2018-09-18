@@ -3,7 +3,9 @@
 
 function getSnsDestination() {
   const snsDestination = {
-    "execute": () => {}
+    "execute"() {
+      return Promise.resolve(() => {});
+    }
   };
   return snsDestination;
 }
