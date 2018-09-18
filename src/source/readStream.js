@@ -1,6 +1,6 @@
 const Readable = require("stream").Readable;
 const logger = require("../logger")("serviceHost.source.readStream");
-const messageBuilder = require("./messageBuilder");
+const controlMessageBuilder = require("./controlMessageBuilder");
 
 
 function getReadStream(configuration, source) {
@@ -36,7 +36,7 @@ function getReadStream(configuration, source) {
             "reason": "receiveMessageBatch got no results from the source, sorry!"
           };
           logger.debug(payload.reason);
-          const controlMessage = messageBuilder().withPayload(payload).buildControlMessage();
+          const controlMessage = controlMessageBuilder().withPayload(payload).build();
           readStream.push(controlMessage);
 
         }
@@ -49,7 +49,7 @@ function getReadStream(configuration, source) {
         };
         logger.error(payload.reason);
         logger.error(err);
-        const controlMessage = messageBuilder().withPayload(payload).buildControlMessage();
+        const controlMessage = controlMessageBuilder().withPayload(payload).build();
         readStream.push(controlMessage);
       });
     }

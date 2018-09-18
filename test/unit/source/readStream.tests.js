@@ -7,6 +7,7 @@ const Writable = require("stream").Writable;
 
 const getReadStream = require("../../../src/source/readStream");
 const messageBuilder = require("../../../src/source/messageBuilder");
+const controlMessageBuilder = require("../../../src/source/controlMessageBuilder");
 
 
 const defaultConfig = {
@@ -23,9 +24,9 @@ describe("readStream", () => {
 
       const readStream = getReadStream(defaultConfig, source);
 
-      const expectedControlMessage = messageBuilder()
+      const expectedControlMessage = controlMessageBuilder()
         .withPayload({"reason": "receiveMessageBatch got no results from the source, sorry!"})
-        .buildControlMessage();
+        .build();
 
       const dataPromise = new Promise(resolve => {
         readStream.on("data", message => {
@@ -50,12 +51,12 @@ describe("readStream", () => {
 
       const readStream = getReadStream(defaultConfig, source);
 
-      const expectedControlMessage = messageBuilder()
+      const expectedControlMessage = controlMessageBuilder()
         .withPayload({
           "error": error,
           "reason": "receiveMessageBatch got an error from the source"
         })
-        .buildControlMessage();
+        .build();
 
       const dataPromise = new Promise(resolve => {
         readStream.on("data", message => {

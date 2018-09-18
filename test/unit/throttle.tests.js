@@ -4,6 +4,7 @@ const {Readable} = require("stream");
 
 const throttle = require("../../src/throttle");
 const messageBuilder = require("../../src/source/messageBuilder");
+const controlMessageBuilder = require("../../src/source/controlMessageBuilder");
 const wait = require("../../src/utils/wait");
 
 
@@ -100,7 +101,7 @@ describe("throttle", () => {
   describe("When a control message is received", () => {
     describe("Which indicates no messages to process", () => {
       it("should pause the read stream for 10 milliseconds", () => {
-        const controlMessage = messageBuilder().buildControlMessage();
+        const controlMessage = controlMessageBuilder().build();
         const message = messageBuilder().build();
         const readStream = getReadStreamWithMessaages([controlMessage, message]);
         const messageDelegator = getMessageDelegator();
@@ -128,7 +129,7 @@ describe("throttle", () => {
 
     describe("Which indicates an error occurred", () => {
       it("should pause the read stream for 10 milliseconds", () => {
-        const controlMessage = messageBuilder().withPayload({"error": new Error("foobar")}).buildControlMessage();
+        const controlMessage = controlMessageBuilder().withPayload({"error": new Error("foobar")}).build();
         const message = messageBuilder().build();
         const readStream = getReadStreamWithMessaages([controlMessage, message]);
         const messageDelegator = getMessageDelegator();

@@ -1,7 +1,5 @@
 const uuid = require("uuid/v4");
 
-const controlMessageEventName = "serviceHost.messages.flowControl";
-
 
 function messageBuilder() {
   let eventName;
@@ -10,13 +8,9 @@ function messageBuilder() {
   let correlationId = uuid();
   let attributes = {};
 
-  function isControlMessage() {
-    return eventName === controlMessageEventName;
-  }
   function buildMessage() {
-    return {eventName, version, payload, correlationId, "isControlMessage": isControlMessage(), attributes};
+    return {eventName, version, payload, correlationId, attributes};
   }
-
 
   return {
     "withEventName"(theName) {
@@ -45,15 +39,6 @@ function messageBuilder() {
     },
 
     "build"() {
-      return buildMessage();
-    },
-
-    "buildControlMessage"() {
-      eventName = controlMessageEventName;
-      correlationId = "00000000-0000-0000-0000-000000000000";
-      if (!payload) {
-        payload = {};
-      }
       return buildMessage();
     },
 
