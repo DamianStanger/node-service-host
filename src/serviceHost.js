@@ -3,7 +3,7 @@ const getConfiguration = require("./configuration");
 const logger = require("./logger")("serviceHost");
 const decodeTransformer = require("./decodeTransformer");
 const getMessageDelegator = require("./messageDelegator");
-const heartbeatHandler = require("./handlers/heartbeat");
+const getHeartbeatHandler = require("./handlers/heartbeat");
 
 
 function serviceHost(config) {
@@ -24,6 +24,7 @@ function serviceHost(config) {
 
     logger.debug("Creating and starting the heartbeat");
     const heartbeatMessageDelegator = getMessageDelegator(configuration.heartbeat.source);
+    const heartbeatHandler = getHeartbeatHandler(configuration.heartbeat);
     heartbeatMessageDelegator.registerHandler(heartbeatHandler, configuration.heartbeat.cronEventName);
     throttle(configuration.heartbeat.source, heartbeatMessageDelegator.process, configuration.heartbeat);
   }

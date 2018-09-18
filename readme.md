@@ -38,7 +38,8 @@ export serviceHostMaxNumberOfMessagesToReadInBatch=5    # [10]
 export serviceHostMillisecondsToWaitOnError=1000        # [10000]          // 10 seconds by default
 export serviceHostMillisecondsToWaitOnNoMessages=1000   # [10000]          // 10 seconds by default
 export serviceHostWaitTimeSecondsWhilstReading=0        # [20]             // long polling by default
-export serviceHostheartbeatCronExpression="* * * * * *" # [*/30 * * * * *] // 30 seconds by default
+export serviceHostHeartbeatCronExpression="* * * * * *" # [*/30 * * * * *] // 30 seconds by default
+export serviceHostHeartbeatDestination=logging          # [sqs] logging sqs sns
 export serviceHostQueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName
 export serviceHostErrorArn=arn:aws:sns:eu-west-1:123456789012:mySNSName
 
@@ -104,6 +105,7 @@ To debug the tests you can run
 ```
 
 ## Roadmap
+* make heartbeat handler generic (send sns, just console log, post to http ...)
 * Ensure all failures are handled
 * Stop the streams when the end is reached (throttle)
 * Incremental backoff when consecutive errors occur

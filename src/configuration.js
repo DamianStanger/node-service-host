@@ -1,16 +1,7 @@
 /* eslint-disable no-process-env */
-const path = require("path");
 const logger = require("./logger")("serviceHost.configuration");
-
-
-function getSource(config) {
-  if (config.source && typeof (config.source) === "object") {
-    return config.source;
-  }
-
-  const sourceFileName = path.join(process.cwd(), "src", "source", config.source, "source");
-  return require(sourceFileName)(config);
-}
+const getSource = require("./source/getSource");
+const getDestination = require("./destination/getDestination");
 
 
 // eslint-disable-next-line complexity
@@ -25,6 +16,7 @@ function getConfiguration(config = {}) {
   const millisecondsToWaitOnError = config.millisecondsToWaitOnError || process.env.serviceHostMillisecondsToWaitOnError || 10000;
   const waitTimeSecondsWhilstReading = config.waitTimeSecondsWhilstReading || process.env.serviceHostWaitTimeSecondsWhilstReading || 20;
   const heartbeatSource = (config.heartbeat && config.heartbeat.source) || "cron";
+  const heartbeatDestination = (config.heartbeat && config.heartbeat.destination) || process.env.serviceHostHeartbeatDestination || "sqs";
   const heartbeatCronExpression = (config.heartbeat && config.heartbeat.cronExpression) || process.env.serviceHostHeartbeatCronExpression || "*/30 * * * * *";
 
   const configuration = {
@@ -38,6 +30,7 @@ function getConfiguration(config = {}) {
     "waitTimeSecondsWhilstReading": parseInt(waitTimeSecondsWhilstReading, 10),
     "heartbeat": {
       "source": heartbeatSource,
+      "destination": heartbeatDestination,
       "cronEventName": "serviceHost.messages.heartbeat",
       "cronExpression": heartbeatCronExpression,
       "maxProcessingConcurrency": 1
@@ -46,6 +39,7 @@ function getConfiguration(config = {}) {
 
   configuration.source = getSource(configuration);
   configuration.heartbeat.source = getSource(configuration.heartbeat);
+  configuration.heartbeat.destination = getDestination(configuration.heartbeat);
 
   logger.debug("Config set to", configuration);
 
