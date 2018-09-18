@@ -2,7 +2,7 @@ const {Readable} = require("stream");
 const chai = require("chai");
 chai.should();
 
-const messageBuilder = require("../../src/source/messageBuilder");
+const messageBuilder = require("../../src/messageBuilders/messageBuilder");
 const serviceHostBuilder = require("../../src/serviceHost");
 const registerEvents = require("../../example/service");
 

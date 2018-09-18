@@ -2,7 +2,7 @@ const chai = require("chai");
 const expect = chai.expect;
 chai.should();
 
-const cronMessageBuilder = require("../../../src/source/cronMessageBuilder");
+const cronMessageBuilder = require("../../../src/messageBuilders/cronMessageBuilder");
 
 
 describe("cronMessageBuilder", () => {

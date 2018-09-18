@@ -2,7 +2,7 @@ const fail = require("chai").fail;
 const chai = require("chai");
 chai.should();
 
-const messageBuilder = require("../../../../src/source/messageBuilder");
+const messageBuilder = require("../../../../src/messageBuilders/messageBuilder");
 const getAwsSnsProxy = require("../../../../src/source/aws/snsProxy");
 
 

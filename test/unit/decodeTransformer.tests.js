@@ -5,7 +5,7 @@ chai.should();
 
 const Readable = require("stream").Readable;
 
-const messageBuilder = require("../../src/source/messageBuilder");
+const messageBuilder = require("../../src/messageBuilders/messageBuilder");
 const getDecodeTransformer = require("../../src/decodeTransformer");
 
 

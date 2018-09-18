@@ -4,7 +4,7 @@ const assert = chai.assert;
 chai.should();
 
 const getMessageDelegator = require("../../src/messageDelegator");
-const messageBuilder = require("../../src/source/messageBuilder");
+const messageBuilder = require("../../src/messageBuilders/messageBuilder");
 
 
 describe("messageDelegator", () => {

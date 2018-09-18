@@ -6,8 +6,8 @@ chai.should();
 const Writable = require("stream").Writable;
 
 const getReadStream = require("../../../src/source/readStream");
-const messageBuilder = require("../../../src/source/messageBuilder");
-const controlMessageBuilder = require("../../../src/source/controlMessageBuilder");
+const messageBuilder = require("../../../src/messageBuilders/messageBuilder");
+const controlMessageBuilder = require("../../../src/messageBuilders/controlMessageBuilder");
 
 
 const defaultConfig = {

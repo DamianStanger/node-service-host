@@ -1,5 +1,5 @@
 const logger = require("../../logger")("serviceHost.source.test.source");
-const messageBuilder = require("../messageBuilder");
+const messageBuilder = require("../../messageBuilders/messageBuilder");
 const readStream = require("../readStream");
 const wait = require("../../utils/wait");
 

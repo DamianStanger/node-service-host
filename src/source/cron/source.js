@@ -3,7 +3,7 @@ const Readable = require("stream").Readable;
 
 const logger = require("../../logger")("serviceHost.source.cron.source");
 const cron = require("../../utils/cron");
-const cronMessageBuilder = require("../cronMessageBuilder");
+const cronMessageBuilder = require("../../messageBuilders/cronMessageBuilder");
 
 
 function getSource(configuration) {

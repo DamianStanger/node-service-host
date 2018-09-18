@@ -1,6 +1,6 @@
 const Readable = require("stream").Readable;
 const logger = require("../logger")("serviceHost.source.readStream");
-const controlMessageBuilder = require("./controlMessageBuilder");
+const controlMessageBuilder = require("../messageBuilders/controlMessageBuilder");
 
 
 function getReadStream(configuration, source) {

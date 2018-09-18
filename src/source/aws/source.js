@@ -1,7 +1,7 @@
 const AWS = require("aws-sdk");
 const logger = require("../../logger")("serviceHost.source.aws.source");
 const readStream = require("../readStream");
-const messageBuilder = require("../messageBuilder");
+const messageBuilder = require("../../messageBuilders/messageBuilder");
 const getSnsProxy = require("./snsProxy");
 
 

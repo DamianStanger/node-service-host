@@ -2,7 +2,7 @@ const chai = require("chai");
 const expect = chai.expect;
 chai.should();
 
-const messageBuilder = require("../../../src/source/messageBuilder");
+const messageBuilder = require("../../../src/messageBuilders/messageBuilder");
 
 
 describe("messageBuilder", () => {

@@ -3,8 +3,8 @@ chai.should();
 const {Readable} = require("stream");
 
 const throttle = require("../../src/throttle");
-const messageBuilder = require("../../src/source/messageBuilder");
-const controlMessageBuilder = require("../../src/source/controlMessageBuilder");
+const messageBuilder = require("../../src/messageBuilders/messageBuilder");
+const controlMessageBuilder = require("../../src/messageBuilders/controlMessageBuilder");
 const wait = require("../../src/utils/wait");
 
 

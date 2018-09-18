@@ -1,7 +1,7 @@
 const chai = require("chai");
 chai.should();
 
-const cronMessageBuilder = require("../../../src/source/cronMessageBuilder");
+const cronMessageBuilder = require("../../../src/messageBuilders/cronMessageBuilder");
 const heartbeatHandler = require("../../../src/handlers/heartbeat");
 
 
