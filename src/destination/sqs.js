@@ -1,12 +1,12 @@
 // const logger = require("../logger")("serviceHost.destination.sqs");
 
 
-function getLoggingDestination() {
-  const loggingDestination = {
-
+function getSqsDestination() {
+  const sqsDestination = {
+    "execute": () => {}
   };
-  return loggingDestination;
+  return sqsDestination;
 }
 
 
-module.exports = getLoggingDestination;
+module.exports = getSqsDestination;

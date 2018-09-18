@@ -7,11 +7,15 @@ const getConfiguration = require("../../src/configuration");
 
 function assertSourceIsValid(source) {
   source.should.be.an("object");
-  source.read.should.be.an("function");
-  source.success.should.be.an("function");
-  source.retry.should.be.an("function");
-  source.fail.should.be.an("function");
-  source.ignore.should.be.an("function");
+  source.read.should.be.a("function");
+  source.success.should.be.a("function");
+  source.retry.should.be.a("function");
+  source.fail.should.be.a("function");
+  source.ignore.should.be.a("function");
+}
+function assertDestinationIsValid(destination) {
+  destination.should.be.an("object");
+  destination.execute.should.be.a("function");
 }
 
 
@@ -33,6 +37,7 @@ describe("configuration", () => {
     Reflect.deleteProperty(process.env, "serviceHostSource");
     Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
     Reflect.deleteProperty(process.env, "serviceHostHeartbeatCronExpression");
+    Reflect.deleteProperty(process.env, "serviceHostHeartbeatDestination");
   });
 
   afterEach(() => {
@@ -44,6 +49,7 @@ describe("configuration", () => {
     Reflect.deleteProperty(process.env, "serviceHostSource");
     Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
     Reflect.deleteProperty(process.env, "serviceHostHeartbeatCronExpression");
+    Reflect.deleteProperty(process.env, "serviceHostHeartbeatDestination");
 
     if (heartbeatSource && heartbeatSource.stop) {
       heartbeatSource.stop();
@@ -85,6 +91,7 @@ describe("configuration", () => {
       config.heartbeat.cronEventName.should.equal("serviceHost.messages.heartbeat");
       config.heartbeat.maxProcessingConcurrency.should.equal(1);
       assertSourceIsValid(config.heartbeat.source);
+      assertDestinationIsValid(config.heartbeat.destination);
     });
   });
 
@@ -126,11 +133,13 @@ describe("configuration", () => {
     });
     it("heartbeat", () => {
       process.env.serviceHostHeartbeatCronExpression = "1 2 3 4 5 6";
+      process.env.serviceHostHeartbeatDestination = "logging";
       const config = getConfigurationUnderTest();
       config.heartbeat.cronExpression.should.equal("1 2 3 4 5 6");
       config.heartbeat.cronEventName.should.equal("serviceHost.messages.heartbeat");
       config.heartbeat.maxProcessingConcurrency.should.equal(1);
       assertSourceIsValid(config.heartbeat.source);
+      assertDestinationIsValid(config.heartbeat.destination);
     });
   });
 
@@ -164,11 +173,17 @@ describe("configuration", () => {
       config.waitTimeSecondsWhilstReading.should.equal(555);
     });
     it("heartbeat", () => {
-      const config = getConfigurationUnderTest({"heartbeat": {"cronExpression": "1-2 * */12 * *"}});
+      const config = getConfigurationUnderTest({
+        "heartbeat": {
+          "cronExpression": "1-2 * */12 * *",
+          "destination": "sns"
+        }
+      });
       config.heartbeat.cronExpression.should.equal("1-2 * */12 * *");
       config.heartbeat.cronEventName.should.equal("serviceHost.messages.heartbeat");
       config.heartbeat.maxProcessingConcurrency.should.equal(1);
       assertSourceIsValid(config.heartbeat.source);
+      assertDestinationIsValid(config.heartbeat.destination);
     });
   });
 });

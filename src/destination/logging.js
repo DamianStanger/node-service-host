@@ -3,7 +3,7 @@
 
 function getLoggingDestination() {
   const loggingDestination = {
-
+    "execute": () => {}
   };
   return loggingDestination;
 }
