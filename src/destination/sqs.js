@@ -4,7 +4,7 @@
 function getSqsDestination() {
   const sqsDestination = {
     "execute"() {
-      return Promise.resolve(() => {});
+      return Promise.resolve();
     }
   };
   return sqsDestination;

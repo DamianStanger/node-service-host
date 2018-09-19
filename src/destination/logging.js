@@ -4,7 +4,7 @@
 function getLoggingDestination() {
   const loggingDestination = {
     "execute"() {
-      return Promise.resolve(() => {});
+      return Promise.resolve();
     }
   };
   return loggingDestination;
