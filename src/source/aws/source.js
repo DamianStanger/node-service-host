@@ -2,7 +2,7 @@ const AWS = require("aws-sdk");
 const logger = require("../../logger")("serviceHost.source.aws.source");
 const readStream = require("../readStream");
 const messageBuilder = require("../../messageBuilders/messageBuilder");
-const getSnsProxy = require("./snsProxy");
+const getSnsDestination = require("../../destination/sns");
 
 
 AWS.config.update({"region": "eu-west-1"});
@@ -25,7 +25,7 @@ function getSource(configuration, getReadStream = readStream, sqs = awsSqs, fail
 
   logger.debug("getSource", configuration, awsParams);
 
-  const failureSns = failureSnsProxy || getSnsProxy(configuration.errorArn);
+  const failureSns = failureSnsProxy || getSnsDestination(configuration.errorArn);
 
 
   function deleteMessageFromSqs(message) {
