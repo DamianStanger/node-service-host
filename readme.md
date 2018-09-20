@@ -39,7 +39,8 @@ export serviceHostMillisecondsToWaitOnError=1000        # [10000]          // 10
 export serviceHostMillisecondsToWaitOnNoMessages=1000   # [10000]          // 10 seconds by default
 export serviceHostWaitTimeSecondsWhilstReading=0        # [20]             // long polling by default
 export serviceHostHeartbeatCronExpression="* * * * * *" # [*/30 * * * * *] // 30 seconds by default
-export serviceHostHeartbeatDestination=logging          # [sqs] logging sqs sns
+export serviceHostHeartbeatDestination=sns              # [logging] logging sqs sns
+export serviceHostHeartbeatDestinationParameters="{\"targetArn\": \"arn:aws:sns...\"}" # [{}] // should be a JSON string
 export serviceHostQueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName
 export serviceHostErrorArn=arn:aws:sns:eu-west-1:123456789012:mySNSName
 
@@ -65,6 +66,14 @@ This will send a number of messages into the serviceHost with a simulated 2 seco
 
 To run the example service plugged into the real AWS SQS source just run ```npm start``` with no env config. The
 default source is the AWS SQS source.
+
+
+## Heartbeat
+There is a built in heartbeat that will by default log to the console every 30 seconds. This is configurable in that
+you can change the frequency of the heartbeat and also the destination that the heartbeat will send to, log, sns or sqs.
+### CRON
+### Destination
+#### Parameters
 
 
 ## Tests
