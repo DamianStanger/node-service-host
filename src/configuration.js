@@ -16,8 +16,16 @@ function getConfiguration(config = {}) {
   const millisecondsToWaitOnError = config.millisecondsToWaitOnError || process.env.serviceHostMillisecondsToWaitOnError || 10000;
   const waitTimeSecondsWhilstReading = config.waitTimeSecondsWhilstReading || process.env.serviceHostWaitTimeSecondsWhilstReading || 20;
   const heartbeatSource = (config.heartbeat && config.heartbeat.source) || "cron";
-  const heartbeatDestination = (config.heartbeat && config.heartbeat.destination) || process.env.serviceHostHeartbeatDestination || "sqs";
+  const heartbeatDestination = (config.heartbeat && config.heartbeat.destination) || process.env.serviceHostHeartbeatDestination || "logging";
   const heartbeatCronExpression = (config.heartbeat && config.heartbeat.cronExpression) || process.env.serviceHostHeartbeatCronExpression || "*/30 * * * * *";
+
+  let heartbeatDestinationParameters;
+  if (config.heartbeat && config.heartbeat.destinationParameters) {
+    heartbeatDestinationParameters = config.heartbeat.destinationParameters;
+  } else {
+    heartbeatDestinationParameters = process.env.serviceHostHeartbeatDestinationParameters || "{}";
+    heartbeatDestinationParameters = JSON.parse(heartbeatDestinationParameters);
+  }
 
   const configuration = {
     "source": source,
@@ -31,6 +39,7 @@ function getConfiguration(config = {}) {
     "heartbeat": {
       "source": heartbeatSource,
       "destination": heartbeatDestination,
+      "destinationParameters": heartbeatDestinationParameters,
       "cronEventName": "serviceHost.messages.heartbeat",
       "cronExpression": heartbeatCronExpression,
       "maxProcessingConcurrency": 1

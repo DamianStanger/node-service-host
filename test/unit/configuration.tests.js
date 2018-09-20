@@ -38,6 +38,7 @@ describe("configuration", () => {
     Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
     Reflect.deleteProperty(process.env, "serviceHostHeartbeatCronExpression");
     Reflect.deleteProperty(process.env, "serviceHostHeartbeatDestination");
+    Reflect.deleteProperty(process.env, "serviceHostHeartbeatDestinationParameters");
   });
 
   afterEach(() => {
@@ -50,6 +51,7 @@ describe("configuration", () => {
     Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
     Reflect.deleteProperty(process.env, "serviceHostHeartbeatCronExpression");
     Reflect.deleteProperty(process.env, "serviceHostHeartbeatDestination");
+    Reflect.deleteProperty(process.env, "serviceHostHeartbeatDestinationParameters");
 
     if (heartbeatSource && heartbeatSource.stop) {
       heartbeatSource.stop();
@@ -92,6 +94,7 @@ describe("configuration", () => {
       config.heartbeat.maxProcessingConcurrency.should.equal(1);
       assertSourceIsValid(config.heartbeat.source);
       assertDestinationIsValid(config.heartbeat.destination);
+      config.heartbeat.destinationParameters.should.deep.equal({});
     });
   });
 
@@ -134,12 +137,16 @@ describe("configuration", () => {
     it("heartbeat", () => {
       process.env.serviceHostHeartbeatCronExpression = "1 2 3 4 5 6";
       process.env.serviceHostHeartbeatDestination = "logging";
+      process.env.serviceHostHeartbeatDestinationParameters = "{\"abc\": \"def\"}";
+
       const config = getConfigurationUnderTest();
+
       config.heartbeat.cronExpression.should.equal("1 2 3 4 5 6");
       config.heartbeat.cronEventName.should.equal("serviceHost.messages.heartbeat");
       config.heartbeat.maxProcessingConcurrency.should.equal(1);
       assertSourceIsValid(config.heartbeat.source);
       assertDestinationIsValid(config.heartbeat.destination);
+      config.heartbeat.destinationParameters.should.deep.equal({"abc": "def"});
     });
   });
 
@@ -176,7 +183,8 @@ describe("configuration", () => {
       const config = getConfigurationUnderTest({
         "heartbeat": {
           "cronExpression": "1-2 * */12 * *",
-          "destination": "sns"
+          "destination": "sns",
+          "destinationParameters": {"targetArn": "arn:aws:sns:eu-west-1:123456789012:mySNSName"}
         }
       });
       config.heartbeat.cronExpression.should.equal("1-2 * */12 * *");
@@ -184,6 +192,7 @@ describe("configuration", () => {
       config.heartbeat.maxProcessingConcurrency.should.equal(1);
       assertSourceIsValid(config.heartbeat.source);
       assertDestinationIsValid(config.heartbeat.destination);
+      config.heartbeat.destinationParameters.should.deep.equal(config.heartbeat.destinationParameters);
     });
   });
 });

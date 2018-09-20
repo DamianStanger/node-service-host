@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const Readable = require("stream").Readable;
 
 const logger = require("../../logger")("serviceHost.source.cron.source");
@@ -28,16 +27,16 @@ function getSource(configuration) {
     cronJob.stop();
     return Promise.resolve;
   };
-  cronSource.success = message => {
+  cronSource.success = () => {
     return Promise.resolve();
   };
-  cronSource.retry = (message, error) => {
+  cronSource.retry = () => {
     return Promise.resolve();
   };
-  cronSource.fail = (message, error) => {
+  cronSource.fail = () => {
     return Promise.resolve();
   };
-  cronSource.ignore = message => {
+  cronSource.ignore = () => {
     return Promise.resolve();
   };
 

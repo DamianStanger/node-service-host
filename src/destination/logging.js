@@ -1,9 +1,10 @@
-// const logger = require("../logger")("serviceHost.destination.logging");
+const logger = require("../logger")("serviceHost.destination.logging");
 
 
 function getLoggingDestination() {
   const loggingDestination = {
-    "execute"() {
+    "execute"(message, subject) {
+      logger.info(message.correlationId, subject);
       return Promise.resolve();
     }
   };
