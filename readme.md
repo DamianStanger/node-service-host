@@ -133,39 +133,29 @@ To debug the tests you can run
 
 ```
 
+
 ## Roadmap
-* make heartbeat handler generic (send sns, just console log, post to http ...)
 * Ensure all failures are handled
-* Stop the streams when the end is reached (throttle)
 * Incremental backoff when consecutive errors occur
 * Logging of the system resources
 
-## Outstanding tasks
-* Finish healthcheck, send to sns
+### Outstanding tasks
+* Finish healthcheck, send to sqs, sns
 * Add demo for use of the cron source
-* Move controlflow message creation to new builder
-
 
 ### Future features
-#### Cron job source
-This would send an event into the system based on a cron cycle. Basically i see this as another source, a read stream which
-when is read from will respond with the nothing to do messages until a given time.
-Question: how accurate would we want this to be? if we wanted a message every 5 seconds it would need to be super accurate
-maybe sending out these nothing to do messages would not be a good idea, rather do nothing until the time needed
 #### Health check messages
-How can we get this into the normal source. maybe a transformer stream that also injects extra messages into the pipe?
-would this be on a every 10 messages you send a healthcheck type of thing, or every 60 seconds? also send on this message
-statistics about the throughput in the last minute.
-Send this message to a writer (in the first place console, but also SNS, allow it to be configurable). I see this as a
-handler that is always present and is setup to handle the control messages.
+Extend the heartbeat to also report on the health of the system. Things like cpu and memory stats, throughput, last message id.
+We could even have tallys of the different message events, counts and the like.
+Are there any other stats that would be pertiant to aid in the running/monitoring of the system
 
 
-## Limitations
+## Limitations of the service host package
 ### Read stream concurrency
-Currently only one call to the source can be in progress at any one time. so if you have a slow network connection to sqs say
+Currently only one call to the source can be in progress at any one time. so if you have a slow network connection to sqs,
 the rate of messages into the pipe will be limited by the rate at which a single connection to sqs can deliver messages. Setting
 the high watermark on the read stream will not make any difference as the logic inside the readstream enforces one at a time
 logic to the source.
 
-Im thinking on how this can best be overcome but right now for my use case where we host the services on EC2 instances and
-these services are slower than the time it takes to read messages off the sqs queue it is not an issue for us at this moment.
+Im thinking on how this can best be overcome. Right now we host our services on EC2 instances and
+the service logic is slower than the time it takes to read messages off the sqs queue, therfore it is not an issue for us at this moment.
