@@ -11,7 +11,7 @@ function getSnsDestination(destinationConfig, sns = awsSns) {
     const params = {
       "Message": JSON.stringify(message),
       "Subject": subject,
-      "TargetArn": destinationConfig.targetArn
+      "TargetSnsArn": destinationConfig.targetSnsArn
     };
 
     logger.info(`${message.correlationId} - sending sns message '${params.Subject}'`);

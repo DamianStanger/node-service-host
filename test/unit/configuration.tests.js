@@ -184,7 +184,7 @@ describe("configuration", () => {
         "heartbeat": {
           "cronExpression": "1-2 * */12 * *",
           "destination": "sns",
-          "destinationParameters": {"targetArn": "arn:aws:sns:eu-west-1:123456789012:mySNSName"}
+          "destinationParameters": {"targetSnsArn": "arn:aws:sns:eu-west-1:123456789012:mySNSName"}
         }
       });
       config.heartbeat.cronExpression.should.equal("1-2 * */12 * *");

@@ -40,7 +40,7 @@ export serviceHostMillisecondsToWaitOnNoMessages=1000   # [10000]          // 10
 export serviceHostWaitTimeSecondsWhilstReading=0        # [20]             // long polling by default
 export serviceHostHeartbeatCronExpression="* * * * * *" # [*/30 * * * * *] // 30 seconds by default
 export serviceHostHeartbeatDestination=sns              # [logging] logging sqs sns
-export serviceHostHeartbeatDestinationParameters="{\"targetArn\": \"arn:aws:sns...\"}" # [{}] // should be a JSON string
+export serviceHostHeartbeatDestinationParameters="{\"targetSnsArn\": \"arn:aws:sns...\"}" # [{}] // should be a JSON string
 export serviceHostQueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName
 export serviceHostErrorArn=arn:aws:sns:eu-west-1:123456789012:mySNSName
 
@@ -70,9 +70,9 @@ default source is the AWS SQS source.
 
 ## Heartbeat
 There is a built in heartbeat that will by default log to the console every 30 seconds. This is configurable in that
-you can change the frequency of the heartbeat and also the destination that the heartbeat will send to, log, sns or sqs.
+you can change the frequency of the heartbeat and also the destination that the heartbeat will send to; log, sns or sqs.
 ### CRON
-Aa string consisting of 6 values, representing (seconds, minutes, hours, day of month, month, day of week)
+A string consisting of 6 values, representing (seconds, minutes, hours, day of month, month, day of week)
 Examples:
 "* * * * * *"      - run every second of every minute/hour/day/month
 "*/30 * * * * *"   - run every 30 seconds
@@ -81,14 +81,19 @@ Examples:
 "0 0 0 * * 1-5"    - run at midnight monday to friday
 
 ### Destination
-There are 3 destination types depending on how you want the heartbeat to be processed
+There are 3 destination types depending on how you want the heartbeat to be processed. All the destinations take a message and a
+subject and proceed to process the message accordingly.
 #### Logging destination [logging]
 This destination just takes the message and subject and logs it.
 It does not take any parameters in the serviceHostHeartbeatDestinationParameters env variable
 #### SQS destination [sqs]
-Use this to send the messages directly to a configured aws sqs queue
+Use this to send the messages directly to a configured aws sqs queue.
+The serviceHostHeartbeatDestinationParameters env variable must contain the SQS URL thus:
+```{"targetSqsUrl": "https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName"}```
 #### SNS destination [sns]
-Use this to publish the messages to a configured aws sns topic
+Use this to publish the messages to a configured aws sns topic.
+The serviceHostHeartbeatDestinationParameters env variable must contain the SQS URL thus:
+```{"targetSnsArn": "arn:aws:sns..."}```
 
 
 ## Tests

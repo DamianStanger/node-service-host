@@ -9,7 +9,7 @@ const getSnsDestination = require("../../../src/destination/sns");
 describe("destination/sns", () => {
 
   const destinationConfig = {
-    "targetArn": "arn:aws:sns:us-west-2:12345678890:endpoint/ABC/DEF/GHI"
+    "targetSnsArn": "arn:aws:sns:us-west-2:12345678890:endpoint/ABC/DEF/GHI"
   };
 
   let actualPublishMessageParams;
@@ -37,7 +37,7 @@ describe("destination/sns", () => {
     const expectedPublishParams = {
       "Message": JSON.stringify(failureMessage),
       "Subject": "Some subject",
-      "TargetArn": "arn:aws:sns:us-west-2:12345678890:endpoint/ABC/DEF/GHI"
+      "TargetSnsArn": "arn:aws:sns:us-west-2:12345678890:endpoint/ABC/DEF/GHI"
     };
 
     it("Should call publish on sns", () => {
