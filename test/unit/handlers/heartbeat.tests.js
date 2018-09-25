@@ -1,14 +1,14 @@
-/* eslint-disable no-undefined */
 const chai = require("chai");
 chai.should();
 
 const cronMessageBuilder = require("../../../src/messageBuilders/cronMessageBuilder");
 const getHeartbeatHandler = require("../../../src/handlers/heartbeat");
 
+
 let executeCalled;
 let executedWithMessage;
 let executedWithSubject;
-function getHeartbeatConfig() {
+function getHeartbeatConfig(errorToThrow) {
   executeCalled = false;
   executedWithMessage = undefined;
   executedWithSubject = undefined;
@@ -18,20 +18,23 @@ function getHeartbeatConfig() {
         executeCalled = true;
         executedWithMessage = message;
         executedWithSubject = subject;
+        if (errorToThrow) {
+          return Promise.reject(errorToThrow);
+        }
         return Promise.resolve();
       }
     }
   };
 }
 
-function success() {
-  return "success returned";
+function success(message) {
+  return {"name": "success returned", message};
 }
 function retry() {
   return "retry returned";
 }
-function fail() {
-  return "fail returned";
+function fail(error, message) {
+  return {"name": "fail returned", error, message};
 }
 
 
@@ -42,7 +45,8 @@ describe("heartbeat handler", () => {
 
     return heartbeatHandler(message, success, retry, fail).then(returnedValue => {
       executeCalled.should.be.true;
-      returnedValue.should.equal("success returned");
+      returnedValue.name.should.equal("success returned");
+      returnedValue.message.should.equal(message);
     });
   });
 
@@ -53,6 +57,18 @@ describe("heartbeat handler", () => {
     return heartbeatHandler(message, success, retry, fail).then(() => {
       executedWithMessage.should.equal(message);
       executedWithSubject.should.equal(`${message.eventName}|${message.payload.timestamp.toISOString()}|${message.correlationId}`);
+    });
+  });
+
+  it("should call fail when an error is thrown by the destination", () => {
+    const message = cronMessageBuilder().build();
+    const errorToThrow = new Error("This is an error!");
+    const heartbeatHandler = getHeartbeatHandler(getHeartbeatConfig(errorToThrow));
+
+    return heartbeatHandler(message, success, retry, fail).then(returnedValue => {
+      returnedValue.name.should.equal("fail returned");
+      returnedValue.error.should.equal(errorToThrow);
+      returnedValue.message.should.equal(message);
     });
   });
 });

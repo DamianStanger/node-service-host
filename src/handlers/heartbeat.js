@@ -11,7 +11,7 @@ function getHeartbeatHandler(config) {
       .then(() => success(message))
       .catch(err => {
         logger.error(message.correlationId, `failure handling ${message.eventName}`, err);
-        fail(err, message);
+        return fail(err, message);
       });
   }
 
