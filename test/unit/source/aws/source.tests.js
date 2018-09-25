@@ -1,4 +1,3 @@
-/* eslint-disable no-undefined */
 const fail = require("chai").fail;
 const chai = require("chai");
 chai.should();
@@ -66,10 +65,10 @@ describe("aws.source", () => {
   }
 
   beforeEach(() => {
-    actualDeleteMessageParams = null;
-    actualReceiveMessageParams = null;
-    actualSource = null;
-    actualConfig = null;
+    actualDeleteMessageParams = undefined;
+    actualReceiveMessageParams = undefined;
+    actualSource = undefined;
+    actualConfig = undefined;
   });
 
 

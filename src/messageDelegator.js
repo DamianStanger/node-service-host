@@ -1,5 +1,3 @@
-/* eslint-disable no-undefined */
-
 const logger = require("./logger")("serviceHost.messageDelegator");
 
 

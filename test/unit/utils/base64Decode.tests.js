@@ -6,11 +6,11 @@ const base64Decode = require("../../../src/utils/base64Decode");
 
 
 describe("base64Decode", () => {
-  it("should throw on null", () => {
-    function base64DecodeFunctionPassedNull() {
-      return base64Decode(null);
+  it("should throw on undefined", () => {
+    function base64DecodeFunctionPassedUndefined() {
+      return base64Decode(undefined);
     }
-    base64DecodeFunctionPassedNull.should.throw(AssertionError("Value to be decoded must be a string, empty or otherwise"));
+    base64DecodeFunctionPassedUndefined.should.throw(AssertionError("Value to be decoded must be a string, empty or otherwise"));
   });
 
   it("should throw when passed a non string argument", () => {

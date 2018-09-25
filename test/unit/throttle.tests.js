@@ -98,6 +98,7 @@ describe("throttle", () => {
     });
   });
 
+
   describe("When a control message is received", () => {
     describe("Which indicates no messages to process", () => {
       it("should pause the read stream for 10 milliseconds", () => {
