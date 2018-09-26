@@ -88,7 +88,7 @@ To hook up the heartbeat to a queue set the following environment variables:
 export serviceHostHeartbeatDestination=sqs
 export serviceHostHeartbeatDestinationParameters="{\"targetSqsUrl\": \"https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName\"}"
 export serviceHostHeartbeatCronExpression="*/10 * * * * *"
-
+```
 Start the example as normal
 ```
 npm start
@@ -99,6 +99,8 @@ messages and acknowledging them (deleting) from the source queue. Remember for b
 above.
 Also see the APPENDIX on how to set up your queue, there is a gotcha in there.
 
+### Example running on a cron job
+TODO
 
 ## Heartbeat
 There is a built in heartbeat that will by default log to the console every 30 seconds. This is configurable in that
@@ -106,11 +108,13 @@ you can change the frequency of the heartbeat and also the destination that the 
 ### CRON
 A string consisting of 6 values, representing (seconds, minutes, hours, day of month, month, day of week)
 Examples:
+```
 "* * * * * *"      - run every second of every minute/hour/day/month
 "*/30 * * * * *"   - run every 30 seconds
 "1 * * * * *"      - run on the first second of every minute
 "0 0 0 * * *"      - run at midnight every day
 "0 0 0 * * 1-5"    - run at midnight monday to friday
+```
 
 ### Destination
 There are 3 destination types depending on how you want the heartbeat to be processed. All the destinations take a message and a
@@ -121,11 +125,16 @@ It does not take any parameters in the serviceHostHeartbeatDestinationParameters
 #### SQS destination [sqs]
 Use this to send the messages directly to a configured aws sqs queue.
 The serviceHostHeartbeatDestinationParameters env variable must contain the SQS URL thus:
-```{"targetSqsUrl": "https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName"}```
+```
+{"targetSqsUrl": "https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName"}
+```
+
 #### SNS destination [sns]
 Use this to publish the messages to a configured aws sns topic.
 The serviceHostHeartbeatDestinationParameters env variable must contain the SQS URL thus:
-```{"targetSnsArn": "arn:aws:sns..."}```
+```
+{"targetSnsArn": "arn:aws:sns..."}
+```
 
 
 ## Tests
@@ -197,6 +206,7 @@ the service logic is slower than the time it takes to read messages off the sqs 
 ## AWS CLI
 To run the example and use this code linked up to AWS you first need to set the following environment variables so that
 the AWS packages can connect to the AWS services
+
 ```
 export AWS_REGION="eu-west-1"
 export AWS_ACCESS_KEY_ID="ABCDEFG12345678"
@@ -205,8 +215,8 @@ export AWS_SECRET_ACCESS_KEY="myS3crEtAcc355KeY4AwS"
 
 ## Setting up SQS queues
 ### Source Queue
-Whats the name of the checkbox
-what are the other recomended settings for the queue
+Whats the name of that checkbox
+what are the other recommended settings for the queue
 retries
 
 ### Dead letter queue (DLQ)
@@ -220,3 +230,10 @@ console. There is no reason why this wont work on other environments but as you 
 in this readme that are more tailored to a linux terminal.
 If you are doing your dev on a windows machine please try out the WSL its excellent and gives a great developer experiance
 whilst integrating really well in to the windows operating system.
+
+
+# Further reading / integration
+* Run the example service pointing the heartbeat to sqs
+* Clone and run the heartbeat processing service (to be built)
+* Clone and run the heartbeat API (again, yet to be built)
+* Clone and run the heartbeat angular SPA (erm... yeah, plans)
