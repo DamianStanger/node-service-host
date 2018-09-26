@@ -33,13 +33,13 @@ and an azure source would need to delete messages from azure. The source knows h
 ```
 export serviceHostLoggerLevel=info                      # [silent] fatal error warn info debug trace
 export serviceHostMaxProcessingConcurrency=2            # [1]
-export serviceHostSource=test                           # [aws]
+export serviceHostSource=test                           # [aws] test cron
 export serviceHostMaxNumberOfMessagesToReadInBatch=5    # [10]
 export serviceHostMillisecondsToWaitOnError=1000        # [10000]          // 10 seconds by default
 export serviceHostMillisecondsToWaitOnNoMessages=1000   # [10000]          // 10 seconds by default
 export serviceHostWaitTimeSecondsWhilstReading=0        # [20]             // long polling by default
 export serviceHostHeartbeatCronExpression="* * * * * *" # [*/30 * * * * *] // 30 seconds by default
-export serviceHostHeartbeatDestination=sns              # [logging] logging sqs sns
+export serviceHostHeartbeatDestination=sns              # [logging] sqs sns
 export serviceHostHeartbeatDestinationParameters="{\"targetSnsArn\": \"arn:aws:sns...\"}" # [{}] // should be a JSON string
 export serviceHostQueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName
 export serviceHostErrorArn=arn:aws:sns:eu-west-1:123456789012:mySNSName
@@ -53,19 +53,48 @@ It is possible to pass the serviceHost... config into the serviceHost when it is
 
 
 ## Example
+### Insallation
+OF course in order to run the example you first need to clone the repo, then run npm install. I would then run the tests to ensure its all
+working correctly before trying to execute the example.
+```
+git clone https://github.com/DamianStanger/serviceHost.git
+npm install
+npm test
+```
+
+### Execution
 To run a simulated full stack test with a fixed set of messages from a test source run:
 ```
-export serviceHostLoggerLevel=trace                 # [silent] fatal error warn info debug trace
+export serviceHostLoggerLevel=info
 export serviceHostSource=test
+export serviceHostHeartbeatDestination=logging
+export serviceHostHeartbeatCronExpression="*/5 * * * * *"
 
 npm start                                           # Run the example server with pretty printed logs
 node example/server.js                              # Get the raw logs to the console
 node example/server.js | node_modules/pino/bin.js   # Will pretty print the pino logs
 ```
-This will send a number of messages into the serviceHost with a simulated 2 second piece of work inside the handler.
+This will send a number of messages into the serviceHost with a simulated 2 second piece of work inside the handler. at the same time
+the heartbeat will run every 5 seconds logging to the console.
 
-To run the example service plugged into the real AWS SQS source just run ```npm start``` with no env config. The
-default source is the AWS SQS source.
+### Example running against AWS
+To run the example service plugged into the real AWS SQS source just run the following config exports and commands:
+```
+export serviceHostLoggerLevel=info
+export serviceHostSource=aws
+export serviceHostQueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/readMessagesFromThisSQS
+export serviceHostErrorArn=arn:aws:sns:eu-west-1:123456789012:sendMyErrorsToThisSNS
+export serviceHostHeartbeatDestination=sqs
+export serviceHostHeartbeatDestinationParameters="{\"targetSqsUrl\": \"https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName\"}"
+export serviceHostHeartbeatCronExpression="*/10 * * * * *"
+
+npm start
+```
+
+Now any messages dropped on to the configured queue will be read and processed by the example service which just has the effect of logging the
+messages and acknowledging them (deleting) from the source queue. Remember for best results to use the message structure in the usage section
+above.
+Also see the APPENDIX on how to set up your queue, there is a gotcha in there.
 
 
 ## Heartbeat
@@ -159,3 +188,26 @@ logic to the source.
 
 Im thinking on how this can best be overcome. Right now we host our services on EC2 instances and
 the service logic is slower than the time it takes to read messages off the sqs queue, therfore it is not an issue for us at this moment.
+
+
+# APPENDIX
+## AWS CLI
+To run the example and use this code linked up to AWS you first need to set the following environment variables so that
+the AWS packages can connect to the AWS services
+```
+export AWS_REGION="eu-west-1"
+export AWS_ACCESS_KEY_ID="ABCDEFG12345678"
+export AWS_SECRET_ACCESS_KEY="myS3crEtAcc355KeY4AwS"
+```
+
+## Setting up SQS queues
+### Source Queue
+Whats the name of the checkbox
+what are the other recomended settings for the queue
+retries
+
+### Dead letter queue (DLQ)
+
+
+### Error queue linked to the error SNS
+
