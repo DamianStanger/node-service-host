@@ -66,28 +66,31 @@ npm test
 To run a simulated full stack test with a fixed set of messages from a test source run:
 ```
 export serviceHostLoggerLevel=info
-export serviceHostSource=test
-export serviceHostHeartbeatDestination=logging
-export serviceHostHeartbeatCronExpression="*/5 * * * * *"
 
 npm start                                           # Run the example server with pretty printed logs
 node example/server.js                              # Get the raw logs to the console
 node example/server.js | node_modules/pino/bin.js   # Will pretty print the pino logs
 ```
-This will send a number of messages into the serviceHost with a simulated 2 second piece of work inside the handler. at the same time
-the heartbeat will run every 5 seconds logging to the console.
+This will send a number of messages into the serviceHost with a simulated 2 second piece of work inside the handler. At the same time
+the heartbeat will run every 30 seconds logging to the console.
 
 ### Example running against AWS
-To run the example service plugged into the real AWS SQS source just run the following config exports and commands:
+To run the example service plugged into the real AWS SQS source just run the following config exports:
 ```
 export serviceHostLoggerLevel=info
 export serviceHostSource=aws
 export serviceHostQueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/readMessagesFromThisSQS
 export serviceHostErrorArn=arn:aws:sns:eu-west-1:123456789012:sendMyErrorsToThisSNS
+```
+
+To hook up the heartbeat to a queue set the following environment variables:
+```
 export serviceHostHeartbeatDestination=sqs
 export serviceHostHeartbeatDestinationParameters="{\"targetSqsUrl\": \"https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName\"}"
 export serviceHostHeartbeatCronExpression="*/10 * * * * *"
 
+Start the example as normal
+```
 npm start
 ```
 
@@ -211,3 +214,9 @@ retries
 
 ### Error queue linked to the error SNS
 
+## Windows/ Linux and WSL
+I developed this package on a windows machine running WSL (windows subsystem for linux) which gives me native ubuntu in the
+console. There is no reason why this wont work on other environments but as you may have noticed there are certain commands
+in this readme that are more tailored to a linux terminal.
+If you are doing your dev on a windows machine please try out the WSL its excellent and gives a great developer experiance
+whilst integrating really well in to the windows operating system.
