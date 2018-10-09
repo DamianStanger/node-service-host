@@ -224,6 +224,7 @@ retries
 
 ### Error queue linked to the error SNS
 
+
 ## Windows/ Linux and WSL
 I developed this package on a windows machine running WSL (windows subsystem for linux) which gives me native ubuntu in the
 console. There is no reason why this wont work on other environments but as you may have noticed there are certain commands
