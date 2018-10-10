@@ -5,6 +5,23 @@ const getDestination = require("../../../src/destination/getDestination");
 
 
 describe("getDestination", () => {
+  it("should pass the parameters to the destination", () => {
+    const message = {"foo": "bar"};
+    const subject = "mySubject";
+    const destinationParameters = {"param2": 3};
+
+    const result = getDestination({
+      "destination": "../../test/unit/destination/testDestination",
+      destinationParameters
+    });
+
+    return result.execute(message, subject).then(obj => {
+      obj.message.should.equal(message);
+      obj.subject.should.equal(subject);
+      obj.config.should.equal(destinationParameters);
+    });
+  });
+
   it("should return an instance of logging", () => {
     const result = getDestination({"destination": "logging"});
 

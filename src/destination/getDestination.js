@@ -7,7 +7,7 @@ function getDestination(config) {
   }
 
   const destinationFileName = path.join(process.cwd(), "src", "destination", config.destination);
-  return require(destinationFileName)(config.destinctionParameters);
+  return require(destinationFileName)(config.destinationParameters);
 }
 
 
