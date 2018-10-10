@@ -217,10 +217,11 @@ export AWS_SECRET_ACCESS_KEY="myS3crEtAcc355KeY4AwS"
 ### Source Queue
 Whats the name of that checkbox
 what are the other recommended settings for the queue
-retries
+Remember to set the queue permissions
+Set the retry policy
 
 ### Dead letter queue (DLQ)
-
+Hook this up to the main source queue via the redrive policy
 
 ### Error queue linked to the error SNS
 
