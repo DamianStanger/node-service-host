@@ -37,7 +37,13 @@ describe("destination/sns", () => {
     const expectedPublishParams = {
       "Message": JSON.stringify(failureMessage),
       "Subject": "Some subject",
-      "TargetSnsArn": "arn:aws:sns:us-west-2:12345678890:endpoint/ABC/DEF/GHI"
+      "TargetArn": "arn:aws:sns:us-west-2:12345678890:endpoint/ABC/DEF/GHI",
+      "MessageAttributes": {
+        "correlationId": {
+          "DataType": "String",
+          "StringValue": originalMessage.correlationId
+        }
+      }
     };
 
     it("Should call publish on sns", () => {
