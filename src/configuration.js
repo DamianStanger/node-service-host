@@ -48,7 +48,8 @@ function getConfiguration(config = {}) {
 
   configuration.source = getSource(configuration);
   configuration.heartbeat.source = getSource(configuration.heartbeat);
-  configuration.heartbeat.destination = getDestination(configuration.heartbeat);
+  const destination = getDestination(configuration.heartbeat);
+  configuration.heartbeat.destination = destination;
 
   logger.debug("Config set to", configuration);
 

@@ -7,6 +7,8 @@ const awsSqs = new AWS.SQS({"apiVersion": "2012-11-05"});
 
 function getSqsDestination(destinationConfig, sqs = awsSqs) {
 
+  logger.debug(`creating sqs destination with '${JSON.stringify(destinationConfig)}'`);
+
   function execute(message, subject) {
     const params = {
       "MessageAttributes": {

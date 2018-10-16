@@ -7,6 +7,8 @@ const awsSns = new AWS.SNS({"apiVersion": "2010-03-31"});
 
 function getSnsDestination(destinationConfig, sns = awsSns) {
 
+  logger.debug(`creating sns destination with '${JSON.stringify(destinationConfig)}'`);
+
   function execute(message, subject) {
     const params = {
       "Message": JSON.stringify(message),
