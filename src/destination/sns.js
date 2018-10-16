@@ -10,6 +10,8 @@ function getSnsDestination(destinationConfig, sns = awsSns) {
   logger.debug(`creating sns destination with '${JSON.stringify(destinationConfig)}'`);
 
   function execute(message, subject) {
+    logger.trace(message.correlationId, "execute", subject);
+
     const params = {
       "Message": JSON.stringify(message),
       "Subject": subject,

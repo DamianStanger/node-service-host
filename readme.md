@@ -133,7 +133,7 @@ The serviceHostHeartbeatDestinationParameters env variable must contain the SQS 
 Use this to publish the messages to a configured aws sns topic.
 The serviceHostHeartbeatDestinationParameters env variable must contain the SQS URL thus:
 ```
-{"targetSnsArn": "arn:aws:sns..."}
+{"targetSnsArn": "https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName"}
 ```
 
 
