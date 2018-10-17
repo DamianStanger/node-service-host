@@ -34,6 +34,7 @@ describe("configuration", () => {
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnError");
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnNoMessages");
     Reflect.deleteProperty(process.env, "serviceHostQueueUrl");
+    Reflect.deleteProperty(process.env, "serviceHostErrorArn");
     Reflect.deleteProperty(process.env, "serviceHostSource");
     Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
     Reflect.deleteProperty(process.env, "serviceHostHeartbeatCronExpression");
@@ -47,6 +48,7 @@ describe("configuration", () => {
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnError");
     Reflect.deleteProperty(process.env, "serviceHostMillisecondsToWaitOnNoMessages");
     Reflect.deleteProperty(process.env, "serviceHostQueueUrl");
+    Reflect.deleteProperty(process.env, "serviceHostErrorArn");
     Reflect.deleteProperty(process.env, "serviceHostSource");
     Reflect.deleteProperty(process.env, "serviceHostWaitTimeSecondsWhilstReading");
     Reflect.deleteProperty(process.env, "serviceHostHeartbeatCronExpression");
@@ -78,6 +80,10 @@ describe("configuration", () => {
     it("queueUrl", () => {
       const config = getConfigurationUnderTest();
       config.queueUrl.should.equal("");
+    });
+    it("errorArn", () => {
+      const config = getConfigurationUnderTest();
+      config.errorArn.should.equal("");
     });
     it("source", () => {
       const config = getConfigurationUnderTest();
@@ -123,6 +129,11 @@ describe("configuration", () => {
       process.env.serviceHostQueueUrl = "MyFakeUrl";
       const config = getConfigurationUnderTest();
       config.queueUrl.should.equal("MyFakeUrl");
+    });
+    it("errorArn", () => {
+      process.env.serviceHostErrorArn = "MyFakeArn";
+      const config = getConfigurationUnderTest();
+      config.errorArn.should.equal("MyFakeArn");
     });
     it("source", () => {
       process.env.serviceHostSource = "test";
@@ -170,6 +181,10 @@ describe("configuration", () => {
     it("queueUrl", () => {
       const config = getConfigurationUnderTest({"queueUrl": "MyFakeUrlFromConfig"});
       config.queueUrl.should.equal("MyFakeUrlFromConfig");
+    });
+    it("errorArn", () => {
+      const config = getConfigurationUnderTest({"errorArn": "MyFakeArnFromConfig"});
+      config.errorArn.should.equal("MyFakeArnFromConfig");
     });
     it("source", () => {
       const config = getConfigurationUnderTest({"source": "test"});

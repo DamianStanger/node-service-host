@@ -89,7 +89,7 @@ function getSource(configuration) {
   }
 
   const source = {receiveMessage, ignore, success, retry, fail};
-  return readStream(configuration, source);
+  return readStream(source);
 }
 
 

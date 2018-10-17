@@ -10,10 +10,6 @@ const messageBuilder = require("../../../src/messageBuilders/messageBuilder");
 const controlMessageBuilder = require("../../../src/messageBuilders/controlMessageBuilder");
 
 
-const defaultConfig = {
-  "readHighWaterMark": 1
-};
-
 describe("readStream", () => {
   describe("when the source has no messages to process", () => {
     it("should send a control message to the pipe", () => {
@@ -22,7 +18,7 @@ describe("readStream", () => {
         "receiveMessage": () => Promise.resolve(data)
       };
 
-      const readStream = getReadStream(defaultConfig, source);
+      const readStream = getReadStream(source);
 
       const expectedControlMessage = controlMessageBuilder()
         .withPayload({"reason": "receiveMessageBatch got no results from the source, sorry!"})
@@ -49,7 +45,7 @@ describe("readStream", () => {
 
       };
 
-      const readStream = getReadStream(defaultConfig, source);
+      const readStream = getReadStream(source);
 
       const expectedControlMessage = controlMessageBuilder()
         .withPayload({
@@ -92,7 +88,7 @@ describe("readStream", () => {
         "receiveMessage": sinon.fake.returns(Promise.resolve(data))
       };
 
-      const readStream = getReadStream(defaultConfig, source);
+      const readStream = getReadStream(source);
 
       const dataPromise = new Promise(resolve => {
         readStream.on("data", message => {
@@ -135,7 +131,7 @@ describe("readStream", () => {
             })
           };
 
-          const readStream = getReadStream(defaultConfig, readSource);
+          const readStream = getReadStream(readSource);
           let dataComplete = 0;
           const writable = new Writable({
             "objectMode": true,
@@ -181,7 +177,7 @@ describe("readStream", () => {
       const source = {
         "success": msg => Promise.resolve(msg)
       };
-      const readStream = getReadStream(defaultConfig, source);
+      const readStream = getReadStream(source);
 
       return readStream.success(message)
         .then(msg => {
@@ -201,7 +197,7 @@ describe("readStream", () => {
       const source = {
         "ignore": msg => Promise.resolve(msg)
       };
-      const readStream = getReadStream(defaultConfig, source);
+      const readStream = getReadStream(source);
 
       return readStream.ignore(message)
         .then(msg => {
@@ -221,7 +217,7 @@ describe("readStream", () => {
       const source = {
         "retry": msg => Promise.resolve(msg)
       };
-      const readStream = getReadStream(defaultConfig, source);
+      const readStream = getReadStream(source);
 
       return readStream.retry(message)
         .then(msg => {
@@ -242,7 +238,7 @@ describe("readStream", () => {
       const source = {
         "fail": msg => Promise.resolve(msg)
       };
-      const readStream = getReadStream(defaultConfig, source);
+      const readStream = getReadStream(source);
 
       return readStream.fail(message)
         .then(msg => {

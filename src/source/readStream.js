@@ -3,7 +3,7 @@ const logger = require("../logger")("serviceHost.source.readStream");
 const controlMessageBuilder = require("../messageBuilders/controlMessageBuilder");
 
 
-function getReadStream(configuration, source) {
+function getReadStream(source) {
 
   let receiveInProgress = false;
 
