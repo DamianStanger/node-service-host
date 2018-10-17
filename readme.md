@@ -1,16 +1,19 @@
 # Service Host
 
-This package contains a service host implementation where in you can host any number of arbitory services inside the host.
-The host pulls data from a source (for example AWS SQS) and sends those messages to one of the configured services handlers.
+This package contains a service host implementation. You can host any number of arbitory services inside the host.
+The host pulls data from a source (for example AWS SQS) and routes those messages to one of the configured handlers.
 
 Messages coming out of the source must have a certain shape so that the host can route the message to the correct service.
 If the message does not conform to the correct shape it will be sent as is to the first service registered.
+
+There is logging built in along with a heartbeat that can be used to monitor the status of the service host.
 
 
 ## Usage
 
 An example usage is given in the Example folder which uses the test source to get its messages. The host works best when passed
-messages in the following format although will work with any message format. its just that the routing will be ignored.
+messages in the following format although will work with any message format. It's just that the routing will be ignored and the messages
+will be routed to the first available handler.
 
 ```json
 {
@@ -21,15 +24,17 @@ messages in the following format although will work with any message format. its
 }
 ```
 
-When configuring, the service host needs to be given a handler, this handler needs to be a function that takes as arguments
+When it is used the service host needs to be given a handler, this handler needs to be a function that takes as arguments
 a message, and a collection of callbacks that give control to the handler on what to do with the message once all is done.
-success (delete the message), retry (do nothing with the message), or fail (treat the message to an error).
+success (delete the message), retry (do nothing with the message), or fail (treat the message to an error),
 
 These callbacks are all relative to a source. For example an aws sqs source will need to delete messages from the sqs queue
-and an azure source would need to delete messages from azure. The source knows how to deal with messages from that source.
+and an azure source would need to delete messages from azure. The source knows how to deal with messages originating from that source.
+
+For an example of setting up a handler see the registerHandlers method in example/service.js
 
 
-## Config - Defaults defined in the brackets []
+## Config - Defaults defined in the [brackets]
 ```
 export serviceHostLoggerLevel=info                      # [silent] fatal error warn info debug trace
 export serviceHostMaxProcessingConcurrency=2            # [1]
@@ -49,12 +54,12 @@ export AWS_ACCESS_KEY_ID=CCCCCCCDDDDDDD
 export AWS_REGION="eu-west-1"
 ```
 
-It is possible to pass the serviceHost... config into the serviceHost when it is instantiated example/server.js shows how this works.
+It is possible to pass the config into the serviceHost when it is instantiated example/server.js shows how this works for a couple of the config values.
 
 
 ## Example
-### Insallation
-OF course in order to run the example you first need to clone the repo, then run npm install. I would then run the tests to ensure its all
+### Installation
+Of course in order to run the example you first need to clone the repo, then run npm install. I would then run the tests to ensure its all
 working correctly before trying to execute the example.
 ```
 git clone https://github.com/DamianStanger/serviceHost.git
@@ -66,30 +71,26 @@ npm test
 To run a simulated full stack test with a fixed set of messages from a test source run:
 ```
 export serviceHostLoggerLevel=info
-
-npm start                                           # Run the example server with pretty printed logs
-node example/server.js                              # Get the raw logs to the console
-node example/server.js | node_modules/pino/bin.js   # Will pretty print the pino logs
+npm start                            # Run the example server with pretty printed logs
 ```
 This will send a number of messages into the serviceHost with a simulated 2 second piece of work inside the handler. At the same time
 the heartbeat will run every 30 seconds logging to the console.
 
-### Example running against AWS
+### Example running against AWS as the source
 To run the example service plugged into the real AWS SQS source just run the following config exports:
 ```
-export serviceHostLoggerLevel=info
+export serviceHostLoggerLevel=debug
 export serviceHostSource=aws
 export serviceHostQueueUrl=https://sqs.eu-west-1.amazonaws.com/123456789/readMessagesFromThisSQS
 export serviceHostErrorArn=arn:aws:sns:eu-west-1:123456789012:sendMyErrorsToThisSNS
 ```
 
-To hook up the heartbeat to a queue set the following environment variables:
+To hook up the heartbeat to an AWS queue set the following environment variables:
 ```
 export serviceHostHeartbeatDestination=sqs
 export serviceHostHeartbeatDestinationParameters="{\"targetSqsUrl\": \"https://sqs.eu-west-1.amazonaws.com/123456789/myQueueName\"}"
-export serviceHostHeartbeatCronExpression="*/10 * * * * *"
 ```
-Start the example as normal
+Then start the example as normal
 ```
 npm start
 ```
@@ -97,7 +98,9 @@ npm start
 Now any messages dropped on to the configured queue will be read and processed by the example service which just has the effect of logging the
 messages and acknowledging them (deleting) from the source queue. Remember for best results to use the message structure in the usage section
 above.
+
 Also see the APPENDIX on how to set up your queue, there is a gotcha in there.
+
 
 ### Example running on a cron job
 TODO
