@@ -1,11 +1,20 @@
 {
-  "name": "servicehost",
+  "name": "node-service-host",
   "version": "1.0.0",
-  "description": "Service Host",
+  "description": "Host any number of arbitrary services inside one service host. Messages will be read from SQS and routed to the configured service based on metadata.",
   "repository": {
     "type": "git",
     "url": "https://github.com/DamianStanger/serviceHost.git"
   },
+  "keywords": [
+    "aws",
+    "host",
+    "microservice",
+    "pubsub",
+    "service",
+    "servicehost",
+    "sqs"
+  ],
   "engines": {
     "node": ">=8.0.0"
   },
