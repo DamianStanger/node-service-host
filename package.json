@@ -1,6 +1,6 @@
 {
   "name": "node-service-host",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Host any number of arbitrary services inside one service host. Messages will be read from SQS and routed to the configured service based on metadata.",
   "repository": {
     "type": "git",
