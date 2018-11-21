@@ -42,7 +42,7 @@
     ]
   },
   "author": "Damian Stanger",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "aws-sdk": "^2.274.1",
     "cron": "^1.4.1",
